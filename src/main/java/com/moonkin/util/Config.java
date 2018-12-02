@@ -5,14 +5,14 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import cn.hutool.setting.dialect.Props;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
  * 配置管理
- * Created by rememberber(https://github.com/rememberber) on 2017/6/14.
+ * @author xuduo
+ * @date 2018-09-25
  */
 public class Config {
 
@@ -23,100 +23,6 @@ public class Config {
     private Props props;
 
     private static Config ourInstance = new Config();
-
-    private String msgName;
-
-    private String previewUser;
-
-    private int memberCount;
-
-    private String memberSql;
-
-    private String memberFilePath;
-
-    private int pushSuccess;
-
-    private int pushFail;
-
-    private long pushLastTime;
-
-    private long pushLeftTime;
-
-    private int totalRecord;
-
-    private int totalPage;
-
-    private int totalThread;
-
-    private int recordPerPage;
-
-    private int pagePerThread;
-
-    private boolean dryRun;
-
-    private boolean radioStartAt;
-
-    private String textStartAt;
-
-    private boolean radioStopAt;
-
-    private String textStopAt;
-
-    private boolean radioPerDay;
-
-    private String textPerDay;
-
-    private boolean radioPerWeek;
-
-    private String textPerWeekWeek;
-
-    private String textPerWeekTime;
-
-    private boolean autoCheckUpdate;
-
-    private String wechatAppId;
-
-    private String wechatAppSecret;
-
-    private String wechatToken;
-
-    private String wechatAesKey;
-
-    private String miniAppAppId;
-
-    private String miniAppAppSecret;
-
-    private String miniAppToken;
-
-    private String miniAppAesKey;
-
-    private String aliyunAccessKeyId;
-
-    private String aliyunAccessKeySecret;
-
-    private String aliyunSign;
-
-    private String aliServerUrl;
-
-    private String aliAppKey;
-
-    private String aliAppSecret;
-
-    private String aliSign;
-
-    private String txyunAppId;
-
-    private String txyunAppKey;
-
-    private String txyunSign;
-
-    private String mysqlUrl;
-
-    private String mysqlDatabase;
-
-    private String mysqlUser;
-
-    private String mysqlPassword;
 
     private String theme;
 
@@ -186,21 +92,6 @@ public class Config {
     private void originInit() {
         props = new Props(file);
 
-        props.setProperty("msg.msgName", "");
-        props.setProperty("msg.previewUser", "");
-        props.setProperty("member.count", "0");
-        props.setProperty("member.sql", "SELECT openid FROM");
-        props.setProperty("member.filePath", "");
-        props.setProperty("push.success", "0");
-        props.setProperty("push.fail", "0");
-        props.setProperty("push.lastTime", "0");
-        props.setProperty("push.leftTime", "0");
-        props.setProperty("push.totalRecord", "0");
-        props.setProperty("push.totalPage", "0");
-        props.setProperty("push.totalThread", "0");
-        props.setProperty("push.recordPerPage", "500");
-        props.setProperty("push.pagePerThread", "3");
-        props.setProperty("push.dryRun", "true");
         props.setProperty("schedule.radioStartAt", "false");
         props.setProperty("schedule.textStartAt", "");
         props.setProperty("schedule.radioStopAt", "false");
@@ -210,29 +101,6 @@ public class Config {
         props.setProperty("schedule.radioPerWeek", "false");
         props.setProperty("schedule.textPerWeek.week", "一");
         props.setProperty("schedule.textPerWeek.time", "");
-        props.setProperty("setting.normal.autoCheckUpdate", "true");
-        props.setProperty("setting.wechat.appId", "");
-        props.setProperty("setting.wechat.AppSecret", "");
-        props.setProperty("setting.wechat.token", "");
-        props.setProperty("setting.wechat.aesKey", "");
-        props.setProperty("setting.miniApp.appId", "");
-        props.setProperty("setting.miniApp.AppSecret", "");
-        props.setProperty("setting.miniApp.token", "");
-        props.setProperty("setting.miniApp.aesKey", "");
-        props.setProperty("setting.aliyun.accessKeyId", "");
-        props.setProperty("setting.aliyun.accessKeySecret", "");
-        props.setProperty("setting.aliyun.aliyunSign", "");
-        props.setProperty("setting.ali.serverUrl", "");
-        props.setProperty("setting.ali.appKey", "");
-        props.setProperty("setting.ali.appSecret", "");
-        props.setProperty("setting.ali.sign", "");
-        props.setProperty("setting.txyun.appId", "");
-        props.setProperty("setting.txyun.appKey", "");
-        props.setProperty("setting.txyun.txyunSign", "");
-        props.setProperty("setting.mysql.url", "");
-        props.setProperty("setting.mysql.database", "");
-        props.setProperty("setting.mysql.user", "");
-        props.setProperty("setting.mysql.password", "");
         props.setProperty("setting.appearance.theme", "Darcula(推荐)");
         props.setProperty("setting.appearance.font", "Microsoft YaHei UI");
         props.setProperty("setting.appearance.fontSize", "18");

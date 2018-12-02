@@ -10,7 +10,8 @@ import java.awt.event.WindowListener;
 
 /**
  * 窗体事件监听
- * Created by rememberber(https://github.com/rememberber) on 2017/6/21.
+ * @author xuduo
+ * @date 2018-09-25
  */
 public class FramListener {
 
@@ -45,13 +46,7 @@ public class FramListener {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                if (!MainWindow.mainWindow.getPushStartButton().isEnabled()) {
-                    JOptionPane.showMessageDialog(MainWindow.mainWindow.getPushPanel(),
-                            "有推送任务正在进行！\n\n为避免数据丢失，请先停止!\n\n", "Sorry~", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    MainWindow.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                }
-
+                MainWindow.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
 
             @Override

@@ -1,0 +1,295 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 25 11:14:11 2018
+
+@author: siwo
+"""
+import struct
+import numpy as np
+from netCDF4 import Dataset
+import sys
+import os
+import time
+#import matplotlib.pyplot as plt
+def change_factor(factor_in):
+    dictnory={'height':'HGT',
+              'height-p':'HGT-p',
+              'temper':'TMP',
+              'temper-p':'TMP-p',
+              'rh':'RH',
+              'rh-p':'RH-p',
+              #'wind':'WIND',
+              #'wind-p':'WIND-p',
+              'div':'DIV',
+              'div-p':'DIV-p',
+#              'vor':'PV',
+#              'vor-p':'PV-p',
+              'pv':'PV',
+              'pv-p':'PV-p',
+              'omega':'W',
+              'omega-p':'W-p',
+              'slp':'PRMSL',
+              'slp-p':'PRMSL-p',
+              't2':'TMP2M',
+              't2-p':'TMP2M-p',
+              'td2':'TD2M',
+              'td2-p':'TD2M-p',
+              'nc':'TCC',
+              'nc-p':'TCC-p',
+              'hc':'HCC',
+              'hc-p':'HCC-p',
+              'mc':'MCC',
+              'mc-p':'MCC-p',
+              'lc':'LCC',
+              'lc-p':'LCC-p',
+              'dp24':'DP24',
+              'dp24-p':'DP24-p',
+              'dt24-p':'DT24-p',
+              'dh24':'DH24',
+              'dh24-p':'DH24-p',
+              'dt24':'DT24',
+              'rain3':'P3',
+              'rain3-p':'P3-p',
+              'rain6':'P6',
+              'rain6-p':'P6-p',
+              'rain12':'P12',
+              'rain12-p':'P12-p',
+              'rain24':'P24',
+              'rain24-p':'P24-p'
+              }
+    try:
+        return dictnory[factor_in]
+    except KeyError:
+        return factor_in
+def write_to_nc_wanmei(data,file_name_path,factor,level,axis):
+    try:
+        da=Dataset(file_name_path,'a',format='NETCDF4')
+        try:
+            if level<999:
+                levS=np.array([10,20,30,50,70,100,200,300,500,700,850,925])
+                index=np.argwhere(levS == level)
+                da.variables[factor][index[0,0]]=data
+            else:
+                try:
+                    da.variables[factor][:]=data
+                except IndexError:
+                    print(file_name_path,factor)
+                    print(np.shape(data))
+        except KeyError:
+            if level<999:
+                da.createVariable(factor,'f',('lev','lat','lon'))
+                levS=np.array([10,20,30,50,70,100,200,300,500,700,850,925])
+                index=np.argwhere(levS == level)
+                data_defort=np.ones((12,axis[5],axis[4]))*9999
+                da.variables[factor][:]=data_defort
+                da.variables[factor][index[0,0]]=data
+            else:
+                da.createVariable(factor,'f',('lat','lon'))
+                try:
+                    da.variables[factor][:]=data
+                except IndexError:
+                    print(file_name_path,factor)
+                    print(np.shape(data))
+        da.close()
+    except FileNotFoundError:
+        da=Dataset(file_name_path,'w',format='NETCDF4')
+        lonS=np.linspace(axis[0],axis[1],axis[4])
+        latS=np.linspace(axis[2],axis[3],axis[5])
+        levS=np.array([10,20,30,50,70,100,200,300,500,700,850,925])
+        da.createDimension('lon',axis[4])  #创建坐标点
+        da.createDimension('lat',axis[5])  #创建坐标点
+        da.createDimension('lev',12)   #创建坐标点        
+        longitudes=da.createVariable("lon",'f',("lon"))  #添加coordinates  'f'为数据类型，不可或缺
+        latitudes=da.createVariable("lat",'f',("lat"))  #添加coordinates  'f'为数据类型，不可或缺
+        da.createVariable("lev",'i',("lev")) #创建变量，shape=(181,361)  'f'为数据类型，不可或缺
+        da.variables['lat'][:]=latS     #填充数据
+        da.variables['lon'][:]=lonS     #填充数据
+        da.variables['lev'][:]=levS     #填充数据
+        
+        longitudes.units="degrees_east"
+        longitudes.Lo1=axis[0]
+        longitudes.Lo2=axis[1]
+        longitudes.Dx =(axis[1]-axis[0])/(axis[4]-1)
+        longitudes.La1=axis[2]
+        longitudes.La2=axis[3]
+        longitudes.Dy =(axis[3]-axis[2])/(axis[5]-1)
+        latitudes.units="degrees_north"
+        latitudes.La1=axis[2]
+        latitudes.La2=axis[3]
+        latitudes.Dy =(axis[3]-axis[2])/(axis[5]-1)
+        latitudes.Lo1=axis[0]
+        latitudes.Lo2=axis[1]
+        latitudes.Dx =(axis[1]-axis[0])/(axis[4]-1)           
+
+        if level<999:
+            da.createVariable(factor,'f',('lev','lat','lon'))
+            levS=np.array([10,20,30,50,70,100,200,300,500,700,850,925])
+            index=np.argwhere(levS == level)
+            data_defort=np.ones((12,axis[5],axis[4]))*9999
+            da.variables[factor][:]=data_defort
+            da.variables[factor][index[0,0]]=data
+        else:
+            da.createVariable(factor,'f',('lat','lon'))
+            da.variables[factor][:]=data        
+        da.close()
+
+def file_trans(filepath,filename,outpath):
+    if filename[0:6]=='echirs':
+        start=time.time()
+        name_list=filename.split('_')
+        factor=name_list[1]
+        level =name_list[2]
+        report_time=name_list[3][0:12]
+        forecast_time=name_list[3][13:16]
+        binFile=open(filepath+filename,'rb')
+        binFile.seek(5)
+        context1=binFile.read(1*3)
+        data_raw1=struct.unpack('s'*3,context1)
+        tmp=''
+        for i in data_raw1:
+            tmp=tmp+str(i,encoding = "utf-8")
+
+        if tmp=='104':
+            '''起始经纬度信息'''
+            binFile.seek(280)
+            context=binFile.read(1*42)
+            data_raw=struct.unpack('s'*42,context)
+            tmp1=''
+            for i in data_raw:
+                tmp1=tmp1+str(i,encoding = "utf-8")
+            axis=tmp1.split(' ')
+            while '' in axis:
+                axis.remove('')
+            lon0=float(axis[2])
+            lon1=float(axis[3])
+            lat0=float(axis[4])
+            lat1=float(axis[5])
+            lon_p=int(axis[0])
+            lat_p=int(axis[1])    
+        
+        elif tmp=='106':
+            '''起始经纬度信息'''
+            binFile.seek(214)
+            context=binFile.read(1*24)
+            data_raw=struct.unpack('s'*24,context)
+            tmp1=''
+            for i in data_raw:
+                tmp1=tmp1+str(i,encoding = "utf-8")
+            axis=tmp1.split(' ')
+            while '' in axis:
+                axis.remove('')
+            lon0=float(axis[0])
+            lon1=float(axis[1])
+            lat0=float(axis[2])
+            lat1=float(axis[3])
+            
+            '''经纬度格点数'''
+            binFile.seek(280)
+            context=binFile.read(1*10)
+            data_raw=struct.unpack('s'*10,context)
+            tmp2=''
+            for i in data_raw:
+                tmp2=tmp2+str(i,encoding = "utf-8")
+            p_axis=tmp2.split(' ')
+            while '' in p_axis:
+                p_axis.remove('')
+            lon_p=int(p_axis[0])
+            lat_p=int(p_axis[1])
+        elif tmp=='112' or tmp=='113':
+            '''起始经纬度信息'''
+            binFile.seek(216)
+            context=binFile.read(1*42)
+            data_raw=struct.unpack('s'*42,context)
+            tmp1=''
+            for i in data_raw:
+                tmp1=tmp1+str(i,encoding = "utf-8")
+            axis=tmp1.split(' ')
+            while '' in axis:
+                axis.remove('')
+            lon0=float(axis[0])
+            lon1=float(axis[1])
+            lat0=float(axis[2])
+            lat1=float(axis[3])
+            lon_p=int(axis[4])
+            lat_p=int(axis[5])
+
+        binFile.seek(360)
+        if factor[0:4]!='wind':
+            context=binFile.read(4*lon_p*lat_p)
+            data_raw=struct.unpack('f'*lon_p*lat_p,context)
+            binFile.close()
+            verify_data =  np.asarray(data_raw).reshape(lat_p,lon_p)
+            fileout='_'.join([report_time,forecast_time+'.nc'])
+            if int(level)<999:
+                write_to_nc_wanmei(verify_data,outpath+fileout,change_factor(factor),
+                                   int(level),[lon0,lon1,lat0,lat1,lon_p,lat_p])
+            else:
+                write_to_nc_wanmei(verify_data[60:151,80:151],outpath+fileout,change_factor(factor),
+                                   int(level),[60.0,150.0,-10.0,60.0,91,71])                
+        else:
+            context=binFile.read(4*lon_p*lat_p*2)
+            try:
+                data_raw=struct.unpack('f'*lon_p*lat_p*2,context)
+                binFile.close()
+                verify_data =  np.asarray(data_raw).reshape(lat_p*2,lon_p)
+                fileout='_'.join([report_time,forecast_time+'.nc'])
+                if int(level)<999:
+                    write_to_nc_wanmei(verify_data[0:lat_p,:],outpath+fileout,
+                                       factor+'-s',int(level),[lon0,lon1,lat0,lat1,lon_p,lat_p])
+                    write_to_nc_wanmei(verify_data[lat_p:,:],outpath+fileout,
+                                       factor+'-d',int(level),[lon0,lon1,lat0,lat1,lon_p,lat_p])
+                else:
+                    write_to_nc_wanmei(verify_data[0:lat_p,:][60:151,80:151],outpath+fileout,
+                                       factor+'-s',int(level),[60.0,150.0,-10.0,60.0,91,71])
+                    write_to_nc_wanmei(verify_data[lat_p:,:][60:151,80:151],outpath+fileout,
+                                       factor+'-d',int(level),[60.0,150.0,-10.0,60.0,91,71])
+            except:
+                1
+# In[]
+#        画图
+#        x=range(0,lon_p,1)
+#        y=range(0,lat_p,1)
+##        verify_data=np.transpose(verify_data)
+##        verify_data=verify_data[::-1]
+#        from matplotlib import colors
+#        #自定义颜色  范围  0-1
+#        aaaa=[(0.0235294117647059,0.5490196078431373,0.1764705882352941,0),
+#        (0.6784313725490196,0.9019607843137255,0.6862745098039216),
+#        (0.4196078431372549,0.8196078431372549,0.4352941176470588),
+#        (0.2901960784313725,0.7803921568627451,0.3098039215686275),
+#        (0.0274509803921569,0.7019607843137255,0.0588235294117647),
+#        (0.0235294117647059,0.6156862745098039,0.0980392156862745),
+#        (0.0235294117647059,0.5490196078431373,0.1764705882352941)]
+#        cmap = colors.ListedColormap(aaaa)
+#        verify_data=np.transpose(verify_data)
+#        verify_data=verify_data[::-1]
+#        verify_data=np.transpose(verify_data)
+#        plt.figure(figsize=(24,12))
+#        plt.contourf(x,y,verify_data,[0,60.001,70,80,85,90,95,100],cmap=cmap,vmin=20, vmax=100)
+#        plt.colorbar()
+# In[]
+        
+        end=time.time()
+        print(filename + 'has been transformed to nc. Time costs:',end-start)
+    else:
+        print(filename + 'is not the file we need.')
+
+if __name__=="__main__":
+    env = os.path.realpath(__file__) + '/venv/Scripts/'
+    os.system(env + "activate")
+    file_trans(sys.argv[1],sys.argv[2],sys.argv[3])
+#if __name__=="__main__":
+#    file_trans(sys.argv[1],sys.argv[2],sys.argv[3])
+#def zc_file2nc(filepath,filename,outpath)
+#start=time.time()
+#import os
+#filepath='D:\\moonkin\\data\\ec20180924\\'
+#outpath='D:\\moonkin\\dataout\\ec\\'
+#filename='echirs_RH_500_201809240800.000'
+#files= os.listdir(filepath)
+#for filename in files:
+#    file_trans(filepath,filename,outpath)
+#end=time.time()
+#print(filename + 'has been transformed to nc. Time costs:',end-start)
+
+

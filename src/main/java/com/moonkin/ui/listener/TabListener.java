@@ -11,9 +11,11 @@ import java.awt.event.MouseEvent;
 /**
  * tab事件监听
  * @author xuduo
- * @date 2018-09-23
+ * @date 2018-09-25
  */
 public class TabListener {
+
+    private static final Log logger = LogFactory.get();
 
     public static void addListeners() {
         // 暂时停止使用，仅留作demo，日后需要时再使用
@@ -24,7 +26,7 @@ public class TabListener {
                 int index = MainWindow.mainWindow.getTabbedPane().getSelectedIndex();
                 switch (index) {
                     case 4:
-                        MainWindow.mainWindow.setPushMsgName(MainWindow.mainWindow.getMsgNameField().getText());
+                        //MainWindow.mainWindow.setPushMsgName(MainWindow.mainWindow.getMsgNameField().getText());
                     default:
                         break;
                 }

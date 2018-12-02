@@ -1,194 +1,183 @@
 package com.moonkin.ui;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
-import com.apple.eawt.Application;
-import com.moonkin.ui.listener.FramListener;
-import com.moonkin.ui.listener.ScheduleListener;
-import com.moonkin.ui.listener.SettingListener;
-import com.moonkin.ui.listener.TabListener;
+import com.moonkin.config.ConfigPathLoader;
+import com.moonkin.config.TaskProperties;
+import com.moonkin.ui.listener.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
-import com.moonkin.util.SystemUtil;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * 主入口类
+ * 入口类
+ *
  * @author xuduo
- * @date 2018-09-23
+ * @since 2018-09-25
  */
 public class MainWindow {
+    //主面板
     private JPanel mainPanel;
     private JTabbedPane tabbedPane;
-    //地面数据处理
+    //结果输出框
+    private JScrollPane outputCenterPanel;
+    private JTextArea outputTextArea;
+    //地面面板
     private JPanel groundPanel;
-    private JSplitPane messagePanel;
-    private JPanel memberPanel;
-    private JPanel pushPanel;
-    private JPanel settingPanel;
-    private JLabel companyLabel;
-    private JLabel versionLabel;
-    private JComboBox msgTypeComboBox;
-    private JLabel msgTypeLabel;
-    private JPanel templateMsgPanel;
-    private JPanel kefuMsgPanel;
-    private JTextField previewUserField;
-    private JButton previewMsgButton;
-    private JLabel previewMemberLabel;
-    private JTextField msgTemplateIdTextField;
-    private JTextField msgTemplateUrlTextField;
-    private JPanel templateMsgDataPanel;
-    private JLabel templateIdLabel;
-    private JLabel templateUrlLabel;
-    private JTextField templateDataNameTextField;
-    private JTextField templateDataValueTextField;
-    private JTextField templateDataColorTextField;
-    private JButton templateMsgDataAddButton;
-    private JTable templateMsgDataTable;
-    private JLabel templateMsgNameLabel;
-    private JLabel templateMsgValueLabel;
-    private JLabel templateMsgColorLabel;
-    private JComboBox msgKefuMsgTypeComboBox;
-    private JTextField msgKefuMsgTitleTextField;
-    private JTextField msgKefuPicUrlTextField;
-    private JTextField msgKefuDescTextField;
-    private JTextField msgKefuUrlTextField;
-    private JLabel kefuMsgTypeLabel;
-    private JLabel kefuMsgTitleLabel;
-    private JLabel kefuMsgPicUrlLabel;
-    private JLabel kefuMsgDescLabel;
-    private JLabel kefuMsgUrlLabel;
-    private JProgressBar memberTabImportProgressBar;
-    private JTextArea importFromSqlTextArea;
-    private JButton importFromSqlButton;
-    private JTextField memberFilePathField;
-    private JButton importFromFileButton;
-    private JPanel memberTabUpPanel;
-    private JPanel memberTabDownPanel;
-    private JPanel memberTabCenterPanel;
-    private JLabel memberTabCountLabel;
-    private JLabel memberTabImportProgressLabel;
-    private JLabel importFromFileLabel;
-    private JProgressBar pushTotalProgressBar;
-    private JTextField pushPageSizeTextField;
-    private JTextField pushPagePerThreadTextField;
-    private JTextArea pushConsoleTextArea;
-    private JTable pushThreadTable;
-    private JButton ScheduleRunButton;
-    private JLabel pushSuccessCount;
-    private JLabel pushFailCount;
-    private JButton pushStopButton;
-    private JButton pushStartButton;
-    private JTextField msgNameField;
-    private JButton msgSaveButton;
-    private JLabel msgNameLabel;
-    private JPanel pushUpPanel;
-    private JPanel pushDownPanel;
-    private JPanel pushCenterPanel;
-    private JPanel pushControlPanel;
-    private JLabel pushTotalCountLabel;
-    private JLabel pushTotalPageLabel;
-    private JLabel pushTotalThreadLabel;
-    private JLabel pushTotalProgressLabel;
-    private JRadioButton runAtThisTimeRadioButton;
-    private JTextField startAtThisTimeTextField;
-    private JPanel schedulePanel;
-    private JRadioButton runPerDayRadioButton;
-    private JTextField startPerDayTextField;
-    private JRadioButton runPerWeekRadioButton;
-    private JButton scheduleSaveButton;
-    private JComboBox schedulePerWeekComboBox;
-    private JTextField startPerWeekTextField;
-    private JTextField wechatAppIdTextField;
-    private JPasswordField wechatAppSecretPasswordField;
-    private JPasswordField wechatTokenPasswordField;
-    private JPasswordField wechatAesKeyPasswordField;
-    private JButton settingMpInfoSaveButton;
-    private JTextField aliServerUrlTextField;
-    private JPasswordField aliAppKeyPasswordField;
-    private JTextField aliSignTextField;
-    private JButton settingAliInfoSaveButton;
-    private JTextField mysqlUrlTextField;
-    private JTextField mysqlDatabaseTextField;
-    private JTextField mysqlUserTextField;
-    private JPasswordField mysqlPasswordField;
-    private JButton settingTestDbLinkButton;
-    private JButton settingDbInfoSaveButton;
-    private JTable msgHistable;
-    private JCheckBox dryRunCheckBox;
-    private JLabel sloganLabel;
-    private JLabel checkUpdateLabel;
-    private JButton createMsgButton;
-    private JButton memberImportAllButton;
-    private JComboBox settingThemeComboBox;
-    private JComboBox settingFontNameComboBox;
-    private JComboBox settingFontSizeComboBox;
-    private JButton settingAppearanceSaveButton;
-    private JLabel pushLastTimeLabel;
-    private JLabel pushLeftTimeLabel;
-    private JLabel pushMsgName;
-    private JScrollPane settingScrollPane;
-    private JPasswordField aliAppSecretPasswordField;
-    private JButton clearImportButton;
-    private JComboBox memberHisComboBox;
-    private JButton importFromHisButton;
-    private JButton msgHisTableSelectAllButton;
-    private JButton msgHisTableDeleteButton;
-    private JLabel scheduleDetailLabel;
-    private JTextField msgTemplateMiniAppidTextField;
-    private JTextField msgTemplateMiniPagePathTextField;
-    private JLabel templateMiniProgramAppidLabel;
-    private JLabel templateMiniProgramPagePathLabel;
-    private JTextPane helpTextPane;
-    private JLabel labelOnlineHelp;
-    private JLabel templateMiniProgramOptionalLabel1;
-    private JLabel templateMiniProgramOptionalLabel2;
-    private JCheckBox autoCheckUpdateCheckBox;
-    private JButton pushHisLeftSelectAllButton;
-    private JButton pushHisLeftDeleteButton;
-    private JTable pushHisLeftTable;
-    private JButton pushHisExportButton;
-    private JTextArea pushHisTextArea;
-    private JLabel pushHisCountLabel;
-    private JButton pushHisCopyButton;
-    private JButton memberImportTagButton;
-    private JComboBox memberImportTagComboBox;
-    private JButton memberImportTagFreshButton;
-    private JButton memberImportExploreButton;
-    private JTextField aliyunAccessKeyIdTextField;
-    private JPasswordField aliyunAccessKeySecretTextField;
-    private JTextField aliyunSignTextField;
-    private JButton settingAliyunSaveButton;
-    private JButton memberImportTagRetainButton;
-    private JTextField miniAppAppIdTextField;
-    private JPasswordField miniAppAppSecretPasswordField;
-    private JPasswordField miniAppTokenPasswordField;
-    private JPasswordField miniAppAesKeyPasswordField;
-    private JButton settingMaInfoSaveButton;
-    private JTextField msgTemplateKeyWordTextField;
-    private JLabel templateKeyWordLabel;
-    private JPanel userCaseListPanel;
-    private JScrollPane userCaseScrollPane;
-    private JTextField txyunAppIdTextField;
-    private JPasswordField txyunAppKeyTextField;
-    private JTextField txyunSignTextField;
-    private JButton settingTxyunSaveButton;
+    private JLabel groundSourceLabel;
+    private JTextField groundSourceTextField;
+    private JButton groundSourceButton;
+    private JLabel groundDestLabel;
+    private JTextField groundDestTextField;
+    private JButton groundDestButton;
+    private JLabel groundCronLabel;
+    private JRadioButton groundHourRadio;
+    private JLabel groundHourLabel;
+    private JRadioButton ground10minRadio;
+    private JLabel ground10minLabel;
+    private JButton groundStartButton;
+    private JButton groundStopButton;
+    private JLabel groundDelLabel;
+    private JComboBox groundDelTime;
+
+    //高空面板
+    private JPanel highPanel;
+    private JLabel highSourceLabel;
+    private JTextField highSourceTextField;
+    private JButton highSourceButton;
+    private JLabel highDestLabel;
+    private JTextField highDestTextField;
+    private JButton highDestButton;
+    private JLabel highCronLabel;
+    private JTextField highCronTextField;
+    private JRadioButton highHourRadio;
+    private JLabel highHourLabel;
+    private JRadioButton high10minRadio;
+    private JLabel high10minLabel;
+    private JButton highStartButton;
+    private JButton highStopButton;
+    private JLabel highDelLabel;
+    private JComboBox highDelTime;
+    //EC数据
+    private JPanel ecPanel;
+    private JLabel ecSourceLabel;
+    private JTextField ecSourceTextField;
+    private JButton ecSourceButton;
+    private JLabel ecDestLabel;
+    private JTextField ecDestTextField;
+    private JButton ecDestButton;
+    private JLabel ecCronLabel;
+    private JTextField ecCronTextField;
+    private JRadioButton ecHourRadio;
+    private JLabel ecHourLabel;
+    private JRadioButton ec10minRadio;
+    private JLabel ec10minLabel;
+    private JButton ecStartButton;
+    private JButton ecStopButton;
+    private JLabel ecDelLabel;
+    private JComboBox ecDelTime;
+    //雷达数据
+    private JPanel radarPanel;
+    private JLabel radarSourceLabel;
+    private JTextField radarSourceTextField;
+    private JButton radarSourceButton;
+    private JLabel radarDestLabel;
+    private JTextField radarDestTextField;
+    private JButton radarDestButton;
+    private JLabel radarCronLabel;
+    private JTextField radarCronTextField;
+    private JRadioButton radarHourRadio;
+    private JLabel radarHourLabel;
+    private JRadioButton radar10minRadio;
+    private JLabel radar10minLabel;
+    private JButton radarStartButton;
+    private JButton radarStopButton;
+    private JLabel radarDelLabel;
+    private JComboBox radarDelTime;
+    //T799数据
+    private JPanel t799Panel;
+    private JLabel t799SourceLabel;
+    private JTextField t799SourceTextField;
+    private JButton t799SourceButton;
+    private JLabel t799DestLabel;
+    private JTextField t799DestTextField;
+    private JButton t799DestButton;
+    private JLabel t799CronLabel;
+    private JTextField t799CronTextField;
+    private JRadioButton t799HourRadio;
+    private JLabel t799HourLabel;
+    private JRadioButton t79910minRadio;
+    private JLabel t79910minLabel;
+    private JButton t799StartButton;
+    private JButton t799StopButton;
+    private JLabel t799DelLabel;
+    private JComboBox t799DelTime;
+    //日本传真图
+    private JPanel japanPanel;
+    private JLabel japanSourceLabel;
+    private JTextField japanSourceTextField;
+    private JButton japanSourceButton;
+    private JLabel japanDestLabel;
+    private JTextField japanDestTextField;
+    private JButton japanDestButton;
+    private JLabel japanCronLabel;
+    private JTextField japanCronTextField;
+    private JRadioButton japanHourRadio;
+    private JLabel japanHourLabel;
+    private JRadioButton japan10minRadio;
+    private JLabel japan10minLabel;
+    private JButton japanStartButton;
+    private JButton japanStopButton;
+    private JLabel japanDelLabel;
+    private JComboBox japanDelTime;
+    //FY2D数据
+    private JPanel fy2dPanel;
+    private JLabel fy2dSourceLabel;
+    private JTextField fy2dSourceTextField;
+    private JButton fy2dSourceButton;
+    private JLabel fy2dDestLabel;
+    private JTextField fy2dDestTextField;
+    private JButton fy2dDestButton;
+    private JLabel fy2dCronLabel;
+    private JTextField fy2dCronTextField;
+    private JRadioButton fy2dHourRadio;
+    private JLabel fy2dHourLabel;
+    private JRadioButton fy2d10minRadio;
+    private JLabel fy2d10minLabel;
+    private JButton fy2dStartButton;
+    private JButton fy2dStopButton;
+    private JLabel fy2dDelLabel;
+    private JComboBox fy2dDelTime;
+    //FY2E数据
+    private JPanel fy2ePanel;
+    private JLabel fy2eSourceLabel;
+    private JTextField fy2eSourceTextField;
+    private JButton fy2eSourceButton;
+    private JLabel fy2eDestLabel;
+    private JTextField fy2eDestTextField;
+    private JButton fy2eDestButton;
+    private JLabel fy2eCronLabel;
+    private JTextField fy2eCronTextField;
+    private JRadioButton fy2eHourRadio;
+    private JLabel fy2eHourLabel;
+    private JRadioButton fy2e10minRadio;
+    private JLabel fy2e10minLabel;
+    private JButton fy2eStartButton;
+    private JButton fy2eStopButton;
+    private JLabel fy2eDelLabel;
+    private JComboBox fy2eDelTime;
+
     public static JFrame frame;
 
     public static MainWindow mainWindow;
-    private static Log logger = LogFactory.get();
 
     public MainWindow() {
 
     }
 
     public static void main(String[] args) {
-
-        EventQueue.invokeLater(()->{
+        EventQueue.invokeLater(() -> {
             // 初始化主题
             Init.initTheme();
             // 统一设置字体
@@ -196,13 +185,8 @@ public class MainWindow {
             // Windows系统状态栏图标
             frame = new JFrame(ConstantsUI.APP_NAME);
             frame.setIconImage(ConstantsUI.IMAGE_ICON);
-            // Mac系统Dock图标
-            if (SystemUtil.isMacOs()) {
-                Application application = Application.getApplication();
-                application.setDockIconImage(ConstantsUI.IMAGE_ICON);
-            }
-            //得到屏幕的尺寸
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //得到屏幕的尺寸
             frame.setBounds((int) (screenSize.width * 0.1), (int) (screenSize.height * 0.08), (int) (screenSize.width * 0.8),
                     (int) (screenSize.height * 0.8));
 
@@ -217,1267 +201,353 @@ public class MainWindow {
             frame.pack();
             frame.setVisible(true);
 
-            Init.initOthers();
-            Init.initAllTab();
-
             // 添加事件监听
-            SettingListener.addListeners();
-            ScheduleListener.addListeners();
+            GroundListener.addListeners();
+            HighListener.addListeners();
+            ECListener.addListeners();
+            RadarListener.addListeners();
+            T799Listener.addListeners();
+            JapanListener.addListeners();
             TabListener.addListeners();
             FramListener.addListeners();
+            Fy2EListener.addListeners();
         });
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
-
-    public void setMainPanel(JPanel mainPanel) {
-        this.mainPanel = mainPanel;
     }
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
     }
 
-    public void setTabbedPane(JTabbedPane tabbedPane) {
-        this.tabbedPane = tabbedPane;
-    }
-
     public JPanel getGroundPanel() {
         return groundPanel;
     }
 
-    public void setGroundPanel(JPanel groundPanel) {
-        this.groundPanel = groundPanel;
+    public JTextField getGroundSourceTextField() {
+        return groundSourceTextField;
     }
 
-    public JSplitPane getMessagePanel() {
-        return messagePanel;
+    public JButton getGroundSourceButton() {
+        return groundSourceButton;
     }
 
-    public void setMessagePanel(JSplitPane messagePanel) {
-        this.messagePanel = messagePanel;
+    public JTextField getGroundDestTextField() {
+        return groundDestTextField;
     }
 
-    public JPanel getMemberPanel() {
-        return memberPanel;
+    public JButton getGroundDestButton() {
+        return groundDestButton;
     }
 
-    public void setMemberPanel(JPanel memberPanel) {
-        this.memberPanel = memberPanel;
+    public JRadioButton getGroundHourRadio() {
+        return groundHourRadio;
     }
 
-    public JPanel getPushPanel() {
-        return pushPanel;
+    public JRadioButton getGround10minRadio() {
+        return ground10minRadio;
     }
 
-    public void setPushPanel(JPanel pushPanel) {
-        this.pushPanel = pushPanel;
+    public JButton getGroundStartButton() {
+        return groundStartButton;
     }
 
-    public JPanel getSettingPanel() {
-        return settingPanel;
+    public JButton getGroundStopButton() {
+        return groundStopButton;
     }
 
-    public void setSettingPanel(JPanel settingPanel) {
-        this.settingPanel = settingPanel;
+    public JComboBox getGroundDelTime() {
+        return groundDelTime;
     }
 
-    public JLabel getCompanyLabel() {
-        return companyLabel;
+    public JTextArea getOutputTextArea() {
+        return outputTextArea;
     }
 
-    public void setCompanyLabel(JLabel companyLabel) {
-        this.companyLabel = companyLabel;
+    public JPanel getHighPanel() {
+        return highPanel;
     }
 
-    public JLabel getVersionLabel() {
-        return versionLabel;
+    public JTextField getHighSourceTextField() {
+        return highSourceTextField;
     }
 
-    public void setVersionLabel(JLabel versionLabel) {
-        this.versionLabel = versionLabel;
+    public JButton getHighSourceButton() {
+        return highSourceButton;
     }
 
-    public JComboBox getMsgTypeComboBox() {
-        return msgTypeComboBox;
+    public JTextField getHighDestTextField() {
+        return highDestTextField;
     }
 
-    public void setMsgTypeComboBox(String msgType) {
-        this.msgTypeComboBox.setSelectedItem(msgType);
+    public JButton getHighDestButton() {
+        return highDestButton;
     }
 
-    public JLabel getMsgTypeLabel() {
-        return msgTypeLabel;
+    public JRadioButton getHighHourRadio() {
+        return highHourRadio;
     }
 
-    public void setMsgTypeLabel(JLabel msgTypeLabel) {
-        this.msgTypeLabel = msgTypeLabel;
+    public JRadioButton getHigh10minRadio() {
+        return high10minRadio;
     }
 
-    public JPanel getTemplateMsgPanel() {
-        return templateMsgPanel;
+    public JComboBox getHighDelTime() {
+        return highDelTime;
     }
 
-    public void setTemplateMsgPanel(JPanel templateMsgPanel) {
-        this.templateMsgPanel = templateMsgPanel;
+    public JComboBox getEcDelTime() {
+        return ecDelTime;
     }
 
-    public JPanel getKefuMsgPanel() {
-        return kefuMsgPanel;
+    public JComboBox getRadarDelTime() {
+        return radarDelTime;
     }
 
-    public void setKefuMsgPanel(JPanel kefuMsgPanel) {
-        this.kefuMsgPanel = kefuMsgPanel;
+    public JComboBox getT799DelTime() {
+        return t799DelTime;
     }
 
-    public JTextField getPreviewUserField() {
-        return previewUserField;
+    public JComboBox getJapanDelTime() {
+        return japanDelTime;
     }
 
-    public void setPreviewUserField(String previewUser) {
-        this.previewUserField.setText(previewUser);
+    public JComboBox getFy2dDelTime() {
+        return fy2dDelTime;
     }
 
-    public JButton getPreviewMsgButton() {
-        return previewMsgButton;
+    public JComboBox getFy2eDelTime() {
+        return fy2eDelTime;
     }
 
-    public void setPreviewMsgButton(JButton previewMsgButton) {
-        this.previewMsgButton = previewMsgButton;
+    public JRadioButton getEcHourRadio() {
+        return ecHourRadio;
     }
 
-    public JLabel getPreviewMemberLabel() {
-        return previewMemberLabel;
+    public JRadioButton getEc10minRadio() {
+        return ec10minRadio;
     }
 
-    public void setPreviewMemberLabel(JLabel previewMemberLabel) {
-        this.previewMemberLabel = previewMemberLabel;
+    public JRadioButton getRadarHourRadio() {
+        return radarHourRadio;
     }
 
-    public JTextField getMsgTemplateIdTextField() {
-        return msgTemplateIdTextField;
+    public JRadioButton getRadar10minRadio() {
+        return radar10minRadio;
     }
 
-    public void setMsgTemplateIdTextField(String msgTemplateIdTextField) {
-        this.msgTemplateIdTextField.setText(msgTemplateIdTextField);
+    public JRadioButton getT799HourRadio() {
+        return t799HourRadio;
     }
 
-    public JTextField getMsgTemplateUrlTextField() {
-        return msgTemplateUrlTextField;
+    public JRadioButton getT79910minRadio() {
+        return t79910minRadio;
     }
 
-    public void setMsgTemplateUrlTextField(String msgTemplateUrlTextField) {
-        this.msgTemplateUrlTextField.setText(msgTemplateUrlTextField);
+    public JRadioButton getJapanHourRadio() {
+        return japanHourRadio;
     }
 
-    public JTextField getMsgTemplateMiniAppidTextField() {
-        return msgTemplateMiniAppidTextField;
+    public JRadioButton getJapan10minRadio() {
+        return japan10minRadio;
     }
 
-    public void setMsgTemplateMiniAppidTextField(String msgTemplateMiniAppidTextField) {
-        this.msgTemplateMiniAppidTextField.setText(msgTemplateMiniAppidTextField);
+    public JRadioButton getFy2dHourRadio() {
+        return fy2dHourRadio;
     }
 
-    public JTextField getMsgTemplateMiniPagePathTextField() {
-        return msgTemplateMiniPagePathTextField;
+    public JRadioButton getFy2d10minRadio() {
+        return fy2d10minRadio;
     }
 
-    public void setMsgTemplateMiniPagePathTextField(String msgTemplateMiniPagePathTextField) {
-        this.msgTemplateMiniPagePathTextField.setText(msgTemplateMiniPagePathTextField);
+    public JRadioButton getFy2eHourRadio() {
+        return fy2eHourRadio;
     }
 
-    public JPanel getTemplateMsgDataPanel() {
-        return templateMsgDataPanel;
+    public JRadioButton getFy2e10minRadio() {
+        return fy2e10minRadio;
     }
 
-    public void setTemplateMsgDataPanel(JPanel templateMsgDataPanel) {
-        this.templateMsgDataPanel = templateMsgDataPanel;
+    public JButton getHighStartButton() {
+        return highStartButton;
     }
 
-    public JLabel getTemplateIdLabel() {
-        return templateIdLabel;
+    public JButton getHighStopButton() {
+        return highStopButton;
     }
 
-    public void setTemplateIdLabel(JLabel templateIdLabel) {
-        this.templateIdLabel = templateIdLabel;
+    public JPanel getEcPanel() {
+        return ecPanel;
     }
 
-    public JLabel getTemplateUrlLabel() {
-        return templateUrlLabel;
+    public JTextField getEcSourceTextField() {
+        return ecSourceTextField;
     }
 
-    public void setTemplateUrlLabel(JLabel templateUrlLabel) {
-        this.templateUrlLabel = templateUrlLabel;
+    public JButton getEcSourceButton() {
+        return ecSourceButton;
     }
 
-    public JTextField getTemplateDataNameTextField() {
-        return templateDataNameTextField;
+    public JTextField getEcDestTextField() {
+        return ecDestTextField;
     }
 
-    public void setTemplateDataNameTextField(JTextField templateDataNameTextField) {
-        this.templateDataNameTextField = templateDataNameTextField;
+    public JButton getEcDestButton() {
+        return ecDestButton;
     }
 
-    public JTextField getTemplateDataValueTextField() {
-        return templateDataValueTextField;
+    public JButton getEcStartButton() {
+        return ecStartButton;
     }
 
-    public void setTemplateDataValueTextField(JTextField templateDataValueTextField) {
-        this.templateDataValueTextField = templateDataValueTextField;
+    public JButton getEcStopButton() {
+        return ecStopButton;
     }
 
-    public JTextField getTemplateDataColorTextField() {
-        return templateDataColorTextField;
+    public JPanel getRadarPanel() {
+        return radarPanel;
     }
 
-    public void setTemplateDataColorTextField(JTextField templateDataColorTextField) {
-        this.templateDataColorTextField = templateDataColorTextField;
+    public JTextField getRadarSourceTextField() {
+        return radarSourceTextField;
     }
 
-    public JButton getTemplateMsgDataAddButton() {
-        return templateMsgDataAddButton;
+    public JButton getRadarSourceButton() {
+        return radarSourceButton;
     }
 
-    public void setTemplateMsgDataAddButton(JButton templateMsgDataAddButton) {
-        this.templateMsgDataAddButton = templateMsgDataAddButton;
+    public JTextField getRadarDestTextField() {
+        return radarDestTextField;
     }
 
-    public JTable getTemplateMsgDataTable() {
-        return templateMsgDataTable;
+    public JButton getRadarDestButton() {
+        return radarDestButton;
     }
 
-    public void setTemplateMsgDataTable(JTable templateMsgDataTable) {
-        this.templateMsgDataTable = templateMsgDataTable;
+    public JButton getRadarStartButton() {
+        return radarStartButton;
     }
 
-    public JLabel getTemplateMsgNameLabel() {
-        return templateMsgNameLabel;
+    public JButton getRadarStopButton() {
+        return radarStopButton;
     }
 
-    public void setTemplateMsgNameLabel(JLabel templateMsgNameLabel) {
-        this.templateMsgNameLabel = templateMsgNameLabel;
+    public JPanel getT799Panel() {
+        return t799Panel;
     }
 
-    public JLabel getTemplateMsgValueLabel() {
-        return templateMsgValueLabel;
+    public JTextField getT799SourceTextField() {
+        return t799SourceTextField;
     }
 
-    public void setTemplateMsgValueLabel(JLabel templateMsgValueLabel) {
-        this.templateMsgValueLabel = templateMsgValueLabel;
+    public JButton getT799SourceButton() {
+        return t799SourceButton;
     }
 
-    public JLabel getTemplateMsgColorLabel() {
-        return templateMsgColorLabel;
+    public JTextField getT799DestTextField() {
+        return t799DestTextField;
     }
 
-    public void setTemplateMsgColorLabel(JLabel templateMsgColorLabel) {
-        this.templateMsgColorLabel = templateMsgColorLabel;
+    public JButton getT799DestButton() {
+        return t799DestButton;
     }
 
-    public JComboBox getMsgKefuMsgTypeComboBox() {
-        return msgKefuMsgTypeComboBox;
+    public JButton getT799StartButton() {
+        return t799StartButton;
     }
 
-    public void setMsgKefuMsgTypeComboBox(String msgKefuMsgTypeComboBox) {
-        this.msgKefuMsgTypeComboBox.setSelectedItem(msgKefuMsgTypeComboBox);
+    public JButton getT799StopButton() {
+        return t799StopButton;
     }
 
-    public JTextField getMsgKefuMsgTitleTextField() {
-        return msgKefuMsgTitleTextField;
+    public JPanel getJapanPanel() {
+        return japanPanel;
     }
 
-    public void setMsgKefuMsgTitleTextField(String msgKefuMsgTitleTextField) {
-        this.msgKefuMsgTitleTextField.setText(msgKefuMsgTitleTextField);
+    public JTextField getJapanSourceTextField() {
+        return japanSourceTextField;
     }
 
-    public JTextField getMsgKefuPicUrlTextField() {
-        return msgKefuPicUrlTextField;
+    public JButton getJapanSourceButton() {
+        return japanSourceButton;
     }
 
-    public void setMsgKefuPicUrlTextField(String msgKefuPicUrlTextField) {
-        this.msgKefuPicUrlTextField.setText(msgKefuPicUrlTextField);
+    public JTextField getJapanDestTextField() {
+        return japanDestTextField;
     }
 
-    public JTextField getMsgKefuDescTextField() {
-        return msgKefuDescTextField;
+    public JButton getJapanDestButton() {
+        return japanDestButton;
     }
 
-    public void setMsgKefuDescTextField(String msgKefuDescTextField) {
-        this.msgKefuDescTextField.setText(msgKefuDescTextField);
+    public JButton getJapanStartButton() {
+        return japanStartButton;
     }
 
-    public JTextField getMsgKefuUrlTextField() {
-        return msgKefuUrlTextField;
+    public JButton getJapanStopButton() {
+        return japanStopButton;
     }
 
-    public void setMsgKefuUrlTextField(String msgKefuUrlTextField) {
-        this.msgKefuUrlTextField.setText(msgKefuUrlTextField);
+    public JPanel getFy2dPanel() {
+        return fy2dPanel;
     }
 
-    public JLabel getKefuMsgTypeLabel() {
-        return kefuMsgTypeLabel;
+    public JTextField getFy2dSourceTextField() {
+        return fy2dSourceTextField;
     }
 
-    public void setKefuMsgTypeLabel(JLabel kefuMsgTypeLabel) {
-        this.kefuMsgTypeLabel = kefuMsgTypeLabel;
+    public JButton getFy2dSourceButton() {
+        return fy2dSourceButton;
     }
 
-    public JLabel getKefuMsgTitleLabel() {
-        return kefuMsgTitleLabel;
+    public JTextField getFy2dDestTextField() {
+        return fy2dDestTextField;
     }
 
-    public void setKefuMsgTitleLabel(JLabel kefuMsgTitleLabel) {
-        this.kefuMsgTitleLabel = kefuMsgTitleLabel;
+    public JButton getFy2dDestButton() {
+        return fy2dDestButton;
     }
 
-    public JLabel getKefuMsgPicUrlLabel() {
-        return kefuMsgPicUrlLabel;
+    public JButton getFy2dStartButton() {
+        return fy2dStartButton;
     }
 
-    public void setKefuMsgPicUrlLabel(JLabel kefuMsgPicUrlLabel) {
-        this.kefuMsgPicUrlLabel = kefuMsgPicUrlLabel;
+    public JButton getFy2dStopButton() {
+        return fy2dStopButton;
     }
 
-    public JLabel getKefuMsgDescLabel() {
-        return kefuMsgDescLabel;
+    public JPanel getFy2ePanel() {
+        return fy2ePanel;
     }
 
-    public void setKefuMsgDescLabel(JLabel kefuMsgDescLabel) {
-        this.kefuMsgDescLabel = kefuMsgDescLabel;
+    public JTextField getFy2eSourceTextField() {
+        return fy2eSourceTextField;
     }
 
-    public JLabel getKefuMsgUrlLabel() {
-        return kefuMsgUrlLabel;
+    public JButton getFy2eSourceButton() {
+        return fy2eSourceButton;
     }
 
-    public void setKefuMsgUrlLabel(JLabel kefuMsgUrlLabel) {
-        this.kefuMsgUrlLabel = kefuMsgUrlLabel;
+    public JTextField getFy2eDestTextField() {
+        return fy2eDestTextField;
     }
 
-    public JProgressBar getMemberTabImportProgressBar() {
-        return memberTabImportProgressBar;
+    public JButton getFy2eDestButton() {
+        return fy2eDestButton;
     }
 
-    public void setMemberTabImportProgressBar(JProgressBar memberTabImportProgressBar) {
-        this.memberTabImportProgressBar = memberTabImportProgressBar;
+    public JButton getFy2eStartButton() {
+        return fy2eStartButton;
     }
 
-    public JTextArea getImportFromSqlTextArea() {
-        return importFromSqlTextArea;
+    public JButton getFy2eStopButton() {
+        return fy2eStopButton;
     }
 
-    public void setImportFromSqlTextArea(String importFromSql) {
-        this.importFromSqlTextArea.setText(importFromSql);
+    public static MainWindow getMainWindow() {
+        return mainWindow;
     }
 
-    public JButton getImportFromSqlButton() {
-        return importFromSqlButton;
-    }
-
-    public void setImportFromSqlButton(JButton importFromSqlButton) {
-        this.importFromSqlButton = importFromSqlButton;
-    }
-
-    public JTextField getMemberFilePathField() {
-        return memberFilePathField;
-    }
-
-    public void setMemberFilePathField(String memberFilePath) {
-        this.memberFilePathField.setText(memberFilePath);
-    }
-
-    public JButton getImportFromFileButton() {
-        return importFromFileButton;
-    }
-
-    public void setImportFromFileButton(JButton importFromFileButton) {
-        this.importFromFileButton = importFromFileButton;
-    }
-
-    public JPanel getMemberTabUpPanel() {
-        return memberTabUpPanel;
-    }
-
-    public void setMemberTabUpPanel(JPanel memberTabUpPanel) {
-        this.memberTabUpPanel = memberTabUpPanel;
-    }
-
-    public JPanel getMemberTabDownPanel() {
-        return memberTabDownPanel;
-    }
-
-    public void setMemberTabDownPanel(JPanel memberTabDownPanel) {
-        this.memberTabDownPanel = memberTabDownPanel;
-    }
-
-    public JPanel getMemberTabCenterPanel() {
-        return memberTabCenterPanel;
-    }
-
-    public void setMemberTabCenterPanel(JPanel memberTabCenterPanel) {
-        this.memberTabCenterPanel = memberTabCenterPanel;
-    }
-
-    public JLabel getMemberTabCountLabel() {
-        return memberTabCountLabel;
-    }
-
-    public void setMemberTabCountLabel(int memberTabCount) {
-        this.memberTabCountLabel.setText(String.valueOf(memberTabCount));
-    }
-
-    public JLabel getMemberTabImportProgressLabel() {
-        return memberTabImportProgressLabel;
-    }
-
-    public void setMemberTabImportProgressLabel(JLabel memberTabImportProgressLabel) {
-        this.memberTabImportProgressLabel = memberTabImportProgressLabel;
-    }
-
-    public JLabel getImportFromFileLabel() {
-        return importFromFileLabel;
-    }
-
-    public void setImportFromFileLabel(JLabel importFromFileLabel) {
-        this.importFromFileLabel = importFromFileLabel;
-    }
-
-    public JProgressBar getPushTotalProgressBar() {
-        return pushTotalProgressBar;
-    }
-
-    public void setPushTotalProgressBar(JProgressBar pushTotalProgressBar) {
-        this.pushTotalProgressBar = pushTotalProgressBar;
-    }
-
-    public JTextField getPushPageSizeTextField() {
-        return pushPageSizeTextField;
-    }
-
-    public void setPushPageSizeTextField(int pushPageSize) {
-        this.pushPageSizeTextField.setText(String.valueOf(pushPageSize));
-    }
-
-    public JTextField getPushPagePerThreadTextField() {
-        return pushPagePerThreadTextField;
-    }
-
-    public void setPushPagePerThreadTextField(int pushPagePerThread) {
-        this.pushPagePerThreadTextField.setText(String.valueOf(pushPagePerThread));
-    }
-
-    public JTextArea getPushConsoleTextArea() {
-        return pushConsoleTextArea;
-    }
-
-    public void setPushConsoleTextArea(JTextArea pushConsoleTextArea) {
-        this.pushConsoleTextArea = pushConsoleTextArea;
-    }
-
-    public JTable getPushThreadTable() {
-        return pushThreadTable;
-    }
-
-    public void setPushThreadTable(JTable pushThreadTable) {
-        this.pushThreadTable = pushThreadTable;
-    }
-
-    public JButton getScheduleRunButton() {
-        return ScheduleRunButton;
-    }
-
-    public void setScheduleRunButton(JButton scheduleRunButton) {
-        ScheduleRunButton = scheduleRunButton;
-    }
-
-    public JLabel getPushSuccessCount() {
-        return pushSuccessCount;
-    }
-
-    public void setPushSuccessCount(JLabel pushSuccessCount) {
-        this.pushSuccessCount = pushSuccessCount;
-    }
-
-    public JLabel getPushFailCount() {
-        return pushFailCount;
-    }
-
-    public void setPushFailCount(JLabel pushFailCount) {
-        this.pushFailCount = pushFailCount;
-    }
-
-    public JButton getPushStopButton() {
-        return pushStopButton;
-    }
-
-    public void setPushStopButton(JButton pushStopButton) {
-        this.pushStopButton = pushStopButton;
-    }
-
-    public JButton getPushStartButton() {
-        return pushStartButton;
-    }
-
-    public void setPushStartButton(JButton pushStartButton) {
-        this.pushStartButton = pushStartButton;
-    }
-
-    public JTextField getMsgNameField() {
-        return msgNameField;
-    }
-
-    public void setMsgNameField(String msgName) {
-        this.msgNameField.setText(msgName);
-    }
-
-    public JButton getMsgSaveButton() {
-        return msgSaveButton;
-    }
-
-    public void setMsgSaveButton(JButton msgSaveButton) {
-        this.msgSaveButton = msgSaveButton;
-    }
-
-    public JLabel getMsgNameLabel() {
-        return msgNameLabel;
-    }
-
-    public void setMsgNameLabel(JLabel msgNameLabel) {
-        this.msgNameLabel = msgNameLabel;
-    }
-
-    public JPanel getPushUpPanel() {
-        return pushUpPanel;
-    }
-
-    public void setPushUpPanel(JPanel pushUpPanel) {
-        this.pushUpPanel = pushUpPanel;
-    }
-
-    public JPanel getPushDownPanel() {
-        return pushDownPanel;
-    }
-
-    public void setPushDownPanel(JPanel pushDownPanel) {
-        this.pushDownPanel = pushDownPanel;
-    }
-
-    public JPanel getPushCenterPanel() {
-        return pushCenterPanel;
-    }
-
-    public void setPushCenterPanel(JPanel pushCenterPanel) {
-        this.pushCenterPanel = pushCenterPanel;
-    }
-
-    public JPanel getPushControlPanel() {
-        return pushControlPanel;
-    }
-
-    public void setPushControlPanel(JPanel pushControlPanel) {
-        this.pushControlPanel = pushControlPanel;
-    }
-
-    public JLabel getPushTotalCountLabel() {
-        return pushTotalCountLabel;
-    }
-
-    public void setPushTotalCountLabel(JLabel pushTotalCountLabel) {
-        this.pushTotalCountLabel = pushTotalCountLabel;
-    }
-
-    public JLabel getPushTotalPageLabel() {
-        return pushTotalPageLabel;
-    }
-
-    public void setPushTotalPageLabel(JLabel pushTotalPageLabel) {
-        this.pushTotalPageLabel = pushTotalPageLabel;
-    }
-
-    public JLabel getPushTotalThreadLabel() {
-        return pushTotalThreadLabel;
-    }
-
-    public void setPushTotalThreadLabel(JLabel pushTotalThreadLabel) {
-        this.pushTotalThreadLabel = pushTotalThreadLabel;
-    }
-
-    public JLabel getPushTotalProgressLabel() {
-        return pushTotalProgressLabel;
-    }
-
-    public void setPushTotalProgressLabel(JLabel pushTotalProgressLabel) {
-        this.pushTotalProgressLabel = pushTotalProgressLabel;
-    }
-
-    public JRadioButton getRunAtThisTimeRadioButton() {
-        return runAtThisTimeRadioButton;
-    }
-
-    public void setRunAtThisTimeRadioButton(boolean runAtThisTime) {
-        this.runAtThisTimeRadioButton.setSelected(runAtThisTime);
-    }
-
-    public JTextField getStartAtThisTimeTextField() {
-        return startAtThisTimeTextField;
-    }
-
-    public void setStartAtThisTimeTextField(String startAtThisTimeTextField) {
-        this.startAtThisTimeTextField.setText(startAtThisTimeTextField);
-    }
-
-    public JPanel getSchedulePanel() {
-        return schedulePanel;
-    }
-
-    public void setSchedulePanel(JPanel schedulePanel) {
-        this.schedulePanel = schedulePanel;
-    }
-
-    public JRadioButton getRunPerDayRadioButton() {
-        return runPerDayRadioButton;
-    }
-
-    public void setRunPerDayRadioButton(boolean runPerDay) {
-        this.runPerDayRadioButton.setSelected(runPerDay);
-    }
-
-    public JTextField getStartPerDayTextField() {
-        return startPerDayTextField;
-    }
-
-    public void setStartPerDayTextField(String startPerDayTextField) {
-        this.startPerDayTextField.setText(startPerDayTextField);
-    }
-
-    public JRadioButton getRunPerWeekRadioButton() {
-        return runPerWeekRadioButton;
-    }
-
-    public void setRunPerWeekRadioButton(boolean runPerWeek) {
-        this.runPerWeekRadioButton.setSelected(runPerWeek);
-    }
-
-    public JButton getScheduleSaveButton() {
-        return scheduleSaveButton;
-    }
-
-    public void setScheduleSaveButton(JButton scheduleSaveButton) {
-        this.scheduleSaveButton = scheduleSaveButton;
-    }
-
-    public JComboBox getSchedulePerWeekComboBox() {
-        return schedulePerWeekComboBox;
-    }
-
-    public void setSchedulePerWeekComboBox(String schedulePerWeek) {
-        this.schedulePerWeekComboBox.setSelectedItem(schedulePerWeek);
-    }
-
-    public JTextField getStartPerWeekTextField() {
-        return startPerWeekTextField;
-    }
-
-    public void setStartPerWeekTextField(String startPerWeekTextField) {
-        this.startPerWeekTextField.setText(startPerWeekTextField);
-    }
-
-    public JTextField getWechatAppIdTextField() {
-        return wechatAppIdTextField;
-    }
-
-    public void setWechatAppIdTextField(String wechatAppIdTextField) {
-        this.wechatAppIdTextField.setText(wechatAppIdTextField);
-    }
-
-    public JPasswordField getWechatAppSecretPasswordField() {
-        return wechatAppSecretPasswordField;
-    }
-
-    public void setWechatAppSecretPasswordField(String wechatAppSecretPasswordField) {
-        this.wechatAppSecretPasswordField.setText(wechatAppSecretPasswordField);
-    }
-
-    public JPasswordField getWechatTokenPasswordField() {
-        return wechatTokenPasswordField;
-    }
-
-    public void setWechatTokenPasswordField(String wechatTokenPasswordField) {
-        this.wechatTokenPasswordField.setText(wechatTokenPasswordField);
-    }
-
-    public JPasswordField getWechatAesKeyPasswordField() {
-        return wechatAesKeyPasswordField;
-    }
-
-    public void setWechatAesKeyPasswordField(String wechatAesKeyPasswordField) {
-        this.wechatAesKeyPasswordField.setText(wechatAesKeyPasswordField);
-    }
-
-    public JButton getSettingMpInfoSaveButton() {
-        return settingMpInfoSaveButton;
-    }
-
-    public void setSettingMpInfoSaveButton(JButton settingMpInfoSaveButton) {
-        this.settingMpInfoSaveButton = settingMpInfoSaveButton;
-    }
-
-    public JTextField getAliServerUrlTextField() {
-        return aliServerUrlTextField;
-    }
-
-    public void setAliServerUrlTextField(String aliServerUrlTextField) {
-        this.aliServerUrlTextField.setText(aliServerUrlTextField);
-    }
-
-    public JPasswordField getAliAppKeyPasswordField() {
-        return aliAppKeyPasswordField;
-    }
-
-    public void setAliAppKeyPasswordField(String aliAppKeyPasswordField) {
-        this.aliAppKeyPasswordField.setText(aliAppKeyPasswordField);
-    }
-
-    public JTextField getAliSignTextField() {
-        return aliSignTextField;
-    }
-
-    public void setAliSignTextField(String aliSignTextField) {
-        this.aliSignTextField.setText(aliSignTextField);
-    }
-
-    public JButton getSettingAliInfoSaveButton() {
-        return settingAliInfoSaveButton;
-    }
-
-    public void setSettingAliInfoSaveButton(JButton settingAliInfoSaveButton) {
-        this.settingAliInfoSaveButton = settingAliInfoSaveButton;
-    }
-
-    public JTextField getMysqlUrlTextField() {
-        return mysqlUrlTextField;
-    }
-
-    public void setMysqlUrlTextField(String mysqlUrlTextField) {
-        this.mysqlUrlTextField.setText(mysqlUrlTextField);
-    }
-
-    public JTextField getMysqlDatabaseTextField() {
-        return mysqlDatabaseTextField;
-    }
-
-    public void setMysqlDatabaseTextField(String mysqlDatabaseTextField) {
-        this.mysqlDatabaseTextField.setText(mysqlDatabaseTextField);
-    }
-
-    public JTextField getMysqlUserTextField() {
-        return mysqlUserTextField;
-    }
-
-    public void setMysqlUserTextField(String mysqlUserTextField) {
-        this.mysqlUserTextField.setText(mysqlUserTextField);
-    }
-
-    public JPasswordField getMysqlPasswordField() {
-        return mysqlPasswordField;
-    }
-
-    public void setMysqlPasswordField(String mysqlPasswordField) {
-        this.mysqlPasswordField.setText(mysqlPasswordField);
-    }
-
-    public JButton getSettingTestDbLinkButton() {
-        return settingTestDbLinkButton;
-    }
-
-    public void setSettingTestDbLinkButton(JButton settingTestDbLinkButton) {
-        this.settingTestDbLinkButton = settingTestDbLinkButton;
-    }
-
-    public JButton getSettingDbInfoSaveButton() {
-        return settingDbInfoSaveButton;
-    }
-
-    public void setSettingDbInfoSaveButton(JButton settingDbInfoSaveButton) {
-        this.settingDbInfoSaveButton = settingDbInfoSaveButton;
-    }
-
-    public JTable getMsgHistable() {
-        return msgHistable;
-    }
-
-    public void setMsgHistable(JTable msgHistable) {
-        this.msgHistable = msgHistable;
-    }
-
-    public JCheckBox getDryRunCheckBox() {
-        return dryRunCheckBox;
-    }
-
-    public void setDryRunCheckBox(boolean dryRunCheck) {
-        this.dryRunCheckBox.setSelected(dryRunCheck);
-    }
-
-    public JLabel getSloganLabel() {
-        return sloganLabel;
-    }
-
-    public void setSloganLabel(JLabel sloganLabel) {
-        this.sloganLabel = sloganLabel;
-    }
-
-    public void setPreviewUserField(JTextField previewUserField) {
-        this.previewUserField = previewUserField;
-    }
-
-    public void setImportFromSqlTextArea(JTextArea importFromSqlTextArea) {
-        this.importFromSqlTextArea = importFromSqlTextArea;
-    }
-
-    public void setMemberFilePathField(JTextField memberFilePathField) {
-        this.memberFilePathField = memberFilePathField;
-    }
-
-    public void setMemberTabCountLabel(JLabel memberTabCountLabel) {
-        this.memberTabCountLabel = memberTabCountLabel;
-    }
-
-    public void setMsgNameField(JTextField msgNameField) {
-        this.msgNameField = msgNameField;
-    }
-
-    public JLabel getCheckUpdateLabel() {
-        return checkUpdateLabel;
-    }
-
-    public void setCheckUpdateLabel(JLabel checkUpdateLabel) {
-        this.checkUpdateLabel = checkUpdateLabel;
-    }
-
-    public JButton getCreateMsgButton() {
-        return createMsgButton;
-    }
-
-    public void setCreateMsgButton(JButton createMsgButton) {
-        this.createMsgButton = createMsgButton;
-    }
-
-    public JButton getMemberImportAllButton() {
-        return memberImportAllButton;
-    }
-
-    public void setMemberImportAllButton(JButton memberImportAllButton) {
-        this.memberImportAllButton = memberImportAllButton;
-    }
-
-    public JComboBox getSettingThemeComboBox() {
-        return settingThemeComboBox;
-    }
-
-    public void setSettingThemeComboBox(String settingThemeComboBox) {
-        this.settingThemeComboBox.setSelectedItem(settingThemeComboBox);
-    }
-
-    public JComboBox getSettingFontNameComboBox() {
-        return settingFontNameComboBox;
-    }
-
-    public void setSettingFontNameComboBox(String settingFontNameComboBox) {
-        this.settingFontNameComboBox.setSelectedItem(settingFontNameComboBox);
-    }
-
-    public JComboBox getSettingFontSizeComboBox() {
-        return settingFontSizeComboBox;
-    }
-
-    public void setSettingFontSizeComboBox(int settingFontSizeComboBox) {
-        this.settingFontSizeComboBox.setSelectedItem(String.valueOf(settingFontSizeComboBox));
-    }
-
-    public JButton getSettingAppearanceSaveButton() {
-        return settingAppearanceSaveButton;
-    }
-
-    public void setSettingAppearanceSaveButton(JButton settingAppearanceSaveButton) {
-        this.settingAppearanceSaveButton = settingAppearanceSaveButton;
-    }
-
-    public JLabel getPushLastTimeLabel() {
-        return pushLastTimeLabel;
-    }
-
-    public void setPushLastTimeLabel(JLabel pushLastTimeLabel) {
-        this.pushLastTimeLabel = pushLastTimeLabel;
-    }
-
-    public JLabel getPushLeftTimeLabel() {
-        return pushLeftTimeLabel;
-    }
-
-    public void setPushLeftTimeLabel(JLabel pushLeftTimeLabel) {
-        this.pushLeftTimeLabel = pushLeftTimeLabel;
-    }
-
-    public JLabel getPushMsgName() {
-        return pushMsgName;
-    }
-
-    public void setPushMsgName(String pushMsgName) {
-        this.pushMsgName.setText(pushMsgName);
-    }
-
-    public JScrollPane getSettingScrollPane() {
-        return settingScrollPane;
-    }
-
-    public void setSettingScrollPane(JScrollPane settingScrollPane) {
-        this.settingScrollPane = settingScrollPane;
-    }
-
-    public JPasswordField getAliAppSecretPasswordField() {
-        return aliAppSecretPasswordField;
-    }
-
-    public void setAliAppSecretPasswordField(String aliAppSecretPasswordField) {
-        this.aliAppSecretPasswordField.setText(aliAppSecretPasswordField);
-    }
-
-    public JButton getImportFromHisButton() {
-        return importFromHisButton;
-    }
-
-    public void setImportFromHisButton(JButton importFromHisButton) {
-        this.importFromHisButton = importFromHisButton;
-    }
-
-    public JButton getClearImportButton() {
-        return clearImportButton;
-    }
-
-    public void setClearImportButton(JButton clearImportButton) {
-        this.clearImportButton = clearImportButton;
-    }
-
-    public JComboBox getMemberHisComboBox() {
-        return memberHisComboBox;
-    }
-
-    public void setMemberHisComboBox(JComboBox memberHisComboBox) {
-        this.memberHisComboBox = memberHisComboBox;
-    }
-
-    public JButton getMsgHisTableSelectAllButton() {
-        return msgHisTableSelectAllButton;
-    }
-
-    public void setMsgHisTableSelectAllButton(JButton msgHisTableSelectAllButton) {
-        this.msgHisTableSelectAllButton = msgHisTableSelectAllButton;
-    }
-
-    public JButton getMsgHisTableDeleteButton() {
-        return msgHisTableDeleteButton;
-    }
-
-    public void setMsgHisTableDeleteButton(JButton msgHisTableDeleteButton) {
-        this.msgHisTableDeleteButton = msgHisTableDeleteButton;
-    }
-
-    public JLabel getScheduleDetailLabel() {
-        return scheduleDetailLabel;
-    }
-
-    public void setScheduleDetailLabel(JLabel scheduleDetailLabel) {
-        this.scheduleDetailLabel = scheduleDetailLabel;
-    }
-
-    public JTextPane getHelpTextPane() {
-        return helpTextPane;
-    }
-
-    public void setHelpTextPane(JTextPane helpTextPane) {
-        this.helpTextPane = helpTextPane;
-    }
-
-    public JLabel getLabelOnlineHelp() {
-        return labelOnlineHelp;
-    }
-
-    public void setLabelOnlineHelp(JLabel labelOnlineHelp) {
-        this.labelOnlineHelp = labelOnlineHelp;
-    }
-
-    public JLabel getTemplateMiniProgramAppidLabel() {
-        return templateMiniProgramAppidLabel;
-    }
-
-    public void setTemplateMiniProgramAppidLabel(JLabel templateMiniProgramAppidLabel) {
-        this.templateMiniProgramAppidLabel = templateMiniProgramAppidLabel;
-    }
-
-    public JLabel getTemplateMiniProgramPagePathLabel() {
-        return templateMiniProgramPagePathLabel;
-    }
-
-    public void setTemplateMiniProgramPagePathLabel(JLabel templateMiniProgramPagePathLabel) {
-        this.templateMiniProgramPagePathLabel = templateMiniProgramPagePathLabel;
-    }
-
-    public JLabel getTemplateMiniProgramOptionalLabel1() {
-        return templateMiniProgramOptionalLabel1;
-    }
-
-    public void setTemplateMiniProgramOptionalLabel1(JLabel templateMiniProgramOptionalLabel1) {
-        this.templateMiniProgramOptionalLabel1 = templateMiniProgramOptionalLabel1;
-    }
-
-    public JLabel getTemplateMiniProgramOptionalLabel2() {
-        return templateMiniProgramOptionalLabel2;
-    }
-
-    public void setTemplateMiniProgramOptionalLabel2(JLabel templateMiniProgramOptionalLabel2) {
-        this.templateMiniProgramOptionalLabel2 = templateMiniProgramOptionalLabel2;
-    }
-
-    public JCheckBox getAutoCheckUpdateCheckBox() {
-        return autoCheckUpdateCheckBox;
-    }
-
-    public void setAutoCheckUpdateCheckBox(boolean selected) {
-        this.autoCheckUpdateCheckBox.setSelected(selected);
-    }
-
-    public JTable getPushHisLeftTable() {
-        return pushHisLeftTable;
-    }
-
-    public void setPushHisLeftTable(JTable pushHisLeftTable) {
-        this.pushHisLeftTable = pushHisLeftTable;
-    }
-
-    public JButton getPushHisLeftSelectAllButton() {
-        return pushHisLeftSelectAllButton;
-    }
-
-    public void setPushHisLeftSelectAllButton(JButton pushHisLeftSelectAllButton) {
-        this.pushHisLeftSelectAllButton = pushHisLeftSelectAllButton;
-    }
-
-    public JButton getPushHisLeftDeleteButton() {
-        return pushHisLeftDeleteButton;
-    }
-
-    public void setPushHisLeftDeleteButton(JButton pushHisLeftDeleteButton) {
-        this.pushHisLeftDeleteButton = pushHisLeftDeleteButton;
-    }
-
-    public JTextArea getPushHisTextArea() {
-        return pushHisTextArea;
-    }
-
-    public void setPushHisTextArea(JTextArea pushHisTextArea) {
-        this.pushHisTextArea = pushHisTextArea;
-    }
-
-    public JLabel getPushHisCountLabel() {
-        return pushHisCountLabel;
-    }
-
-    public void setPushHisCountLabel(JLabel pushHisCountLabel) {
-        this.pushHisCountLabel = pushHisCountLabel;
-    }
-
-    public JButton getMemberImportTagButton() {
-        return memberImportTagButton;
-    }
-
-    public void setMemberImportTagButton(JButton memberImportTagButton) {
-        this.memberImportTagButton = memberImportTagButton;
-    }
-
-    public JComboBox getMemberImportTagComboBox() {
-        return memberImportTagComboBox;
-    }
-
-    public void setMemberImportTagComboBox(JComboBox memberImportTagComboBox) {
-        this.memberImportTagComboBox = memberImportTagComboBox;
-    }
-
-    public JButton getMemberImportTagFreshButton() {
-        return memberImportTagFreshButton;
-    }
-
-    public void setMemberImportTagFreshButton(JButton memberImportTagFreshButton) {
-        this.memberImportTagFreshButton = memberImportTagFreshButton;
-    }
-
-    public JButton getPushHisExportButton() {
-        return pushHisExportButton;
-    }
-
-    public void setPushHisExportButton(JButton pushHisExportButton) {
-        this.pushHisExportButton = pushHisExportButton;
-    }
-
-    public JButton getPushHisCopyButton() {
-        return pushHisCopyButton;
-    }
-
-    public void setPushHisCopyButton(JButton pushHisCopyButton) {
-        this.pushHisCopyButton = pushHisCopyButton;
-    }
-
-    public JButton getMemberImportExploreButton() {
-        return memberImportExploreButton;
-    }
-
-    public void setMemberImportExploreButton(JButton memberImportExploreButton) {
-        this.memberImportExploreButton = memberImportExploreButton;
-    }
-
-    public JTextField getAliyunAccessKeyIdTextField() {
-        return aliyunAccessKeyIdTextField;
-    }
-
-    public void setAliyunAccessKeyIdTextField(String aliyunAccessKeyIdTextField) {
-        this.aliyunAccessKeyIdTextField.setText(aliyunAccessKeyIdTextField);
-    }
-
-    public JPasswordField getAliyunAccessKeySecretTextField() {
-        return aliyunAccessKeySecretTextField;
-    }
-
-    public void setAliyunAccessKeySecretTextField(String aliyunAccessKeySecretTextField) {
-        this.aliyunAccessKeySecretTextField.setText(aliyunAccessKeySecretTextField);
-    }
-
-    public JTextField getAliyunSignTextField() {
-        return aliyunSignTextField;
-    }
-
-    public void setAliyunSignTextField(String aliyunSignTextField) {
-        this.aliyunSignTextField.setText(aliyunSignTextField);
-    }
-
-    public JButton getSettingAliyunSaveButton() {
-        return settingAliyunSaveButton;
-    }
-
-    public void setSettingAliyunSaveButton(JButton settingAliyunSaveButton) {
-        this.settingAliyunSaveButton = settingAliyunSaveButton;
-    }
-
-    public JButton getMemberImportTagRetainButton() {
-        return memberImportTagRetainButton;
-    }
-
-    public void setMemberImportTagRetainButton(JButton memberImportTagRetainButton) {
-        this.memberImportTagRetainButton = memberImportTagRetainButton;
-    }
-
-    public JTextField getMiniAppAppIdTextField() {
-        return miniAppAppIdTextField;
-    }
-
-    public void setMiniAppAppIdTextField(String miniAppAppIdTextField) {
-        this.miniAppAppIdTextField.setText(miniAppAppIdTextField);
-    }
-
-    public JPasswordField getMiniAppAppSecretPasswordField() {
-        return miniAppAppSecretPasswordField;
-    }
-
-    public void setMiniAppAppSecretPasswordField(String miniAppAppSecretPasswordField) {
-        this.miniAppAppSecretPasswordField.setText(miniAppAppSecretPasswordField);
-    }
-
-    public JPasswordField getMiniAppTokenPasswordField() {
-        return miniAppTokenPasswordField;
-    }
-
-    public void setMiniAppTokenPasswordField(String miniAppTokenPasswordField) {
-        this.miniAppTokenPasswordField.setText(miniAppTokenPasswordField);
-    }
-
-    public JPasswordField getMiniAppAesKeyPasswordField() {
-        return miniAppAesKeyPasswordField;
-    }
-
-    public void setMiniAppAesKeyPasswordField(String miniAppAesKeyPasswordField) {
-        this.miniAppAesKeyPasswordField.setText(miniAppAesKeyPasswordField);
-    }
-
-    public JButton getSettingMaInfoSaveButton() {
-        return settingMaInfoSaveButton;
-    }
-
-    public void setSettingMaInfoSaveButton(JButton settingMaInfoSaveButton) {
-        this.settingMaInfoSaveButton = settingMaInfoSaveButton;
-    }
-
-    public JTextField getMsgTemplateKeyWordTextField() {
-        return msgTemplateKeyWordTextField;
-    }
-
-    public void setMsgTemplateKeyWordTextField(String msgTemplateKeyWordTextField) {
-        this.msgTemplateKeyWordTextField.setText(msgTemplateKeyWordTextField);
-    }
-
-    public JLabel getTemplateKeyWordLabel() {
-        return templateKeyWordLabel;
-    }
-
-    public void setTemplateKeyWordLabel(JLabel templateKeyWordLabel) {
-        this.templateKeyWordLabel = templateKeyWordLabel;
-    }
-
-    public JPanel getUserCaseListPanel() {
-        return userCaseListPanel;
-    }
-
-    public void setUserCaseListPanel(JPanel userCaseListPanel) {
-        this.userCaseListPanel = userCaseListPanel;
-    }
-
-    public JScrollPane getUserCaseScrollPane() {
-        return userCaseScrollPane;
-    }
-
-    public void setUserCaseScrollPane(JScrollPane userCaseScrollPane) {
-        this.userCaseScrollPane = userCaseScrollPane;
-    }
-
-    public JTextField getTxyunAppIdTextField() {
-        return txyunAppIdTextField;
-    }
-
-    public void setTxyunAppIdTextField(String txyunAppIdTextField) {
-        this.txyunAppIdTextField.setText(txyunAppIdTextField);
-    }
-
-    public JPasswordField getTxyunAppKeyTextField() {
-        return txyunAppKeyTextField;
-    }
-
-    public void setTxyunAppKeyTextField(String txyunAppKeyTextField) {
-        this.txyunAppKeyTextField.setText(txyunAppKeyTextField);
-    }
-
-    public JTextField getTxyunSignTextField() {
-        return txyunSignTextField;
-    }
-
-    public void setTxyunSignTextField(String txyunSignTextField) {
-        this.txyunSignTextField.setText(txyunSignTextField);
-    }
-
-    public JButton getSettingTxyunSaveButton() {
-        return settingTxyunSaveButton;
-    }
-
-    public void setSettingTxyunSaveButton(JButton settingTxyunSaveButton) {
-        this.settingTxyunSaveButton = settingTxyunSaveButton;
+    public static void setMainWindow(MainWindow mainWindow) {
+        MainWindow.mainWindow = mainWindow;
     }
 
     {
@@ -1495,841 +565,509 @@ public class MainWindow {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        //主面板
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(8, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(3, 1, new Insets(8, 0, 0, 0), -1, -1));
+        //tab标签页
         tabbedPane = new JTabbedPane();
         Font tabbedPaneFont = this.$$$getFont$$$(null, -1, -1, tabbedPane.getFont());
-        if (tabbedPaneFont != null) {
-            tabbedPane.setFont(tabbedPaneFont);
-        }
-        mainPanel.add(tabbedPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
-        //地面数据处理面板绘制
+        if (tabbedPaneFont != null) tabbedPane.setFont(tabbedPaneFont);
+        mainPanel.add(tabbedPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 100), null, 0, false));
+        //输出日志框
+        outputCenterPanel = new JScrollPane();
+        mainPanel.add(outputCenterPanel, new GridConstraints(1, 0, 2, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(1000, 450), null, null, 0, false));
+        outputCenterPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "执行情况", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, outputCenterPanel.getFont())));
+        outputTextArea = new JTextArea();
+        outputTextArea.setText("");
+        outputTextArea.setEditable(false);
+        outputCenterPanel.setViewportView(outputTextArea);
+
+        //读任务配置信息
+        TaskProperties groundTaskPropertie = ConfigPathLoader.getTaskProperties("ground");
+        TaskProperties highTaskPropertie = ConfigPathLoader.getTaskProperties("high");
+        TaskProperties ecTaskPropertie = ConfigPathLoader.getTaskProperties("ec");
+        TaskProperties t799TaskPropertie = ConfigPathLoader.getTaskProperties("t799");
+        TaskProperties japanTaskPropertie = ConfigPathLoader.getTaskProperties("japan");
+        TaskProperties radarTaskPropertie = ConfigPathLoader.getTaskProperties("radar");
+        TaskProperties fydTaskPropertie = ConfigPathLoader.getTaskProperties("fyd");
+        TaskProperties fyeTaskPropertie = ConfigPathLoader.getTaskProperties("fye");
+
+        //地面数据
         groundPanel = new JPanel();
-        groundPanel.setLayout(new GridLayoutManager(3, 1, new Insets(10, 10, 10, 10), -1, -1));
-        tabbedPane.addTab("地面观测资料", groundPanel);
+        groundPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab("地面绘图报", groundPanel);
+        groundSourceLabel = new JLabel();
+        groundSourceLabel.setText("原始目录");
+        groundPanel.add(groundSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        groundSourceTextField = new JTextField();
+        groundSourceTextField.setText(groundTaskPropertie.GetPathIn());
+        groundPanel.add(groundSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        groundSourceButton = new JButton();
+        groundSourceButton.setText("浏览");
+        groundPanel.add(groundSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        groundDestLabel = new JLabel();
+        groundDestLabel.setText("输出目录");
+        groundPanel.add(groundDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        groundDestTextField = new JTextField();
+        groundDestTextField.setText(groundTaskPropertie.GetPathOut());
+        groundPanel.add(groundDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        groundDestButton = new JButton();
+        groundDestButton.setText("浏览");
+        groundPanel.add(groundDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        groundCronLabel = new JLabel();
+        groundCronLabel.setText("执行时间");
+        groundPanel.add(groundCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        groundHourRadio = new JRadioButton();
+        if(groundTaskPropertie.GetRadioIndex() == 1)
+            groundHourRadio.setSelected(true);
+        groundPanel.add(groundHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        groundHourLabel = new JLabel();
+        groundHourLabel.setText("每小时执行一次");
+        groundPanel.add(groundHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        ground10minRadio = new JRadioButton();
+        if(groundTaskPropertie.GetRadioIndex() == 2)
+            ground10minRadio.setSelected(true);
+        groundPanel.add(ground10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ground10minLabel = new JLabel();
+        ground10minLabel.setText("每10分钟执行一次");
+        groundPanel.add(ground10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        groundStartButton = new JButton();
+        groundStartButton.setText("启动");
+        groundPanel.add(groundStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        groundStopButton = new JButton();
+        groundStopButton.setText("停止");
+        groundPanel.add(groundStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        groundDelLabel = new JLabel();
+        groundDelLabel.setText("数据保留天数:");
+        groundPanel.add(groundDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        groundDelTime = new JComboBox();
+        groundDelTime.addItem("3");
+        groundDelTime.addItem("2");
+        groundDelTime.addItem("1");
+        groundDelTime.setSelectedItem(groundTaskPropertie.GetDataKeepTime());
+        groundPanel.add(groundDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        //高空数据
+        highPanel = new JPanel();
+        highPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab("高空绘图报", highPanel);
+        highSourceLabel = new JLabel();
+        highSourceLabel.setText("原始目录");
+        highPanel.add(highSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        highSourceTextField = new JTextField();
+        highSourceTextField.setText(highTaskPropertie.GetPathIn());
+        highPanel.add(highSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        highSourceButton = new JButton();
+        highSourceButton.setText("浏览");
+        highPanel.add(highSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        highDestLabel = new JLabel();
+        highDestLabel.setText("输出目录");
+        highPanel.add(highDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        highDestTextField = new JTextField();
+        highDestTextField.setText(highTaskPropertie.GetPathOut());
+        highPanel.add(highDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        highDestButton = new JButton();
+        highDestButton.setText("浏览");
+        highPanel.add(highDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        highCronLabel = new JLabel();
+        highCronLabel.setText("执行时间");
+        highPanel.add(highCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        highHourRadio = new JRadioButton();
+        highPanel.add(highHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        highHourLabel = new JLabel();
+        highHourLabel.setText("每小时执行一次");
+        if(highTaskPropertie.GetRadioIndex() == 1)
+            highHourRadio.setSelected(true);
+        highPanel.add(highHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        high10minRadio = new JRadioButton();
+        highPanel.add(high10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        high10minLabel = new JLabel();
+        high10minLabel.setText("每10分钟执行一次");
+        if(highTaskPropertie.GetRadioIndex() == 2)
+            high10minRadio.setSelected(true);
+        highPanel.add(high10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        
+        highStartButton = new JButton();
+        highStartButton.setText("启动");
+        highPanel.add(highStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        highStopButton = new JButton();
+        highStopButton.setText("停止");
+        highPanel.add(highStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        highDelLabel = new JLabel();
+        highDelLabel.setText("数据保留天数:");
+        highPanel.add(highDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        highDelTime = new JComboBox();
+        highDelTime.addItem("3");
+        highDelTime.addItem("2");
+        highDelTime.addItem("1");
+        highDelTime.setSelectedItem(highTaskPropertie.GetDataKeepTime());
+        highPanel.add(highDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
 
-        messagePanel = new JSplitPane();
-        tabbedPane.addTab("编辑消息", messagePanel);
-        final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
-        panel2.setMaximumSize(new Dimension(-1, -1));
-        panel2.setMinimumSize(new Dimension(-1, -1));
-        panel2.setPreferredSize(new Dimension(-1, -1));
-        messagePanel.setRightComponent(panel2);
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(2, 7, new Insets(0, 0, 0, 0), -1, -1));
-        panel2.add(panel3, new GridConstraints(0, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        msgTypeLabel = new JLabel();
-        Font msgTypeLabelFont = this.$$$getFont$$$(null, Font.BOLD, -1, msgTypeLabel.getFont());
-        if (msgTypeLabelFont != null) {
-            msgTypeLabel.setFont(msgTypeLabelFont);
-        }
-        msgTypeLabel.setText("消息类型");
-        panel3.add(msgTypeLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTypeComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
-        defaultComboBoxModel1.addElement("模板消息");
-        defaultComboBoxModel1.addElement("模板消息-小程序");
-        defaultComboBoxModel1.addElement("客服消息");
-        defaultComboBoxModel1.addElement("客服消息优先");
-        defaultComboBoxModel1.addElement("阿里云短信");
-        defaultComboBoxModel1.addElement("阿里大于模板短信");
-        defaultComboBoxModel1.addElement("腾讯云短信");
-        msgTypeComboBox.setModel(defaultComboBoxModel1);
-        panel3.add(msgTypeComboBox, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgNameLabel = new JLabel();
-        Font msgNameLabelFont = this.$$$getFont$$$(null, Font.BOLD, -1, msgNameLabel.getFont());
-        if (msgNameLabelFont != null) {
-            msgNameLabel.setFont(msgNameLabelFont);
-        }
-        msgNameLabel.setText("推送任务名称");
-        panel3.add(msgNameLabel, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgNameField = new JTextField();
-        panel3.add(msgNameField, new GridConstraints(0, 4, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JSeparator separator1 = new JSeparator();
-        panel3.add(separator1, new GridConstraints(1, 0, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        createMsgButton = new JButton();
-        createMsgButton.setText("新建消息");
-        panel3.add(createMsgButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridLayoutManager(1, 5, new Insets(0, 10, 0, 0), -1, -1));
-        panel2.add(panel4, new GridConstraints(2, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        previewMemberLabel = new JLabel();
-        previewMemberLabel.setText("预览用户openid/手机号（以半角分号分隔）");
-        panel4.add(previewMemberLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        previewUserField = new JTextField();
-        panel4.add(previewUserField, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        previewMsgButton = new JButton();
-        previewMsgButton.setText("预览");
-        panel4.add(previewMsgButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgSaveButton = new JButton();
-        msgSaveButton.setText("保存");
-        panel4.add(msgSaveButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateMsgPanel = new JPanel();
-        templateMsgPanel.setLayout(new GridLayoutManager(6, 3, new Insets(10, 10, 10, 0), -1, -1));
-        panel2.add(templateMsgPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        templateMsgPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "模板消息编辑", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, templateMsgPanel.getFont())));
-        templateIdLabel = new JLabel();
-        templateIdLabel.setText("模板ID");
-        templateMsgPanel.add(templateIdLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTemplateIdTextField = new JTextField();
-        templateMsgPanel.add(msgTemplateIdTextField, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateUrlLabel = new JLabel();
-        templateUrlLabel.setText("跳转URL");
-        templateMsgPanel.add(templateUrlLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTemplateUrlTextField = new JTextField();
-        templateMsgPanel.add(msgTemplateUrlTextField, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMsgDataPanel = new JPanel();
-        templateMsgDataPanel.setLayout(new GridLayoutManager(2, 7, new Insets(10, 0, 0, 0), -1, -1));
-        templateMsgPanel.add(templateMsgDataPanel, new GridConstraints(5, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        templateMsgDataPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "模板消息数据配置（可使用\"$ENTER$\"作为换行符）", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.ABOVE_TOP));
-        templateMsgNameLabel = new JLabel();
-        templateMsgNameLabel.setText("name");
-        templateMsgDataPanel.add(templateMsgNameLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateDataNameTextField = new JTextField();
-        templateMsgDataPanel.add(templateDataNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMsgValueLabel = new JLabel();
-        templateMsgValueLabel.setText("value");
-        templateMsgDataPanel.add(templateMsgValueLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateDataValueTextField = new JTextField();
-        templateMsgDataPanel.add(templateDataValueTextField, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMsgColorLabel = new JLabel();
-        templateMsgColorLabel.setText("color");
-        templateMsgDataPanel.add(templateMsgColorLabel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateDataColorTextField = new JTextField();
-        templateMsgDataPanel.add(templateDataColorTextField, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMsgDataAddButton = new JButton();
-        templateMsgDataAddButton.setIcon(new ImageIcon(getClass().getResource("/icon/add.png")));
-        templateMsgDataAddButton.setText("添加");
-        templateMsgDataPanel.add(templateMsgDataAddButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JScrollPane scrollPane2 = new JScrollPane();
-        templateMsgDataPanel.add(scrollPane2, new GridConstraints(1, 0, 1, 7, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        templateMsgDataTable = new JTable();
-        templateMsgDataTable.setAutoCreateColumnsFromModel(true);
-        templateMsgDataTable.setAutoCreateRowSorter(true);
-        templateMsgDataTable.setGridColor(new Color(-12236470));
-        templateMsgDataTable.setRowHeight(40);
-        scrollPane2.setViewportView(templateMsgDataTable);
-        templateMiniProgramAppidLabel = new JLabel();
-        templateMiniProgramAppidLabel.setText("小程序appid");
-        templateMsgPanel.add(templateMiniProgramAppidLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTemplateMiniAppidTextField = new JTextField();
-        msgTemplateMiniAppidTextField.setText("");
-        templateMsgPanel.add(msgTemplateMiniAppidTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMiniProgramPagePathLabel = new JLabel();
-        templateMiniProgramPagePathLabel.setText("小程序页面路径");
-        templateMsgPanel.add(templateMiniProgramPagePathLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTemplateMiniPagePathTextField = new JTextField();
-        msgTemplateMiniPagePathTextField.setText("");
-        templateMsgPanel.add(msgTemplateMiniPagePathTextField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        templateMiniProgramOptionalLabel1 = new JLabel();
-        templateMiniProgramOptionalLabel1.setText("（选填）");
-        templateMsgPanel.add(templateMiniProgramOptionalLabel1, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateMiniProgramOptionalLabel2 = new JLabel();
-        templateMiniProgramOptionalLabel2.setText("（选填）");
-        templateMsgPanel.add(templateMiniProgramOptionalLabel2, new GridConstraints(4, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        templateKeyWordLabel = new JLabel();
-        templateKeyWordLabel.setText("放大关键词");
-        templateMsgPanel.add(templateKeyWordLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgTemplateKeyWordTextField = new JTextField();
-        templateMsgPanel.add(msgTemplateKeyWordTextField, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        kefuMsgPanel = new JPanel();
-        kefuMsgPanel.setLayout(new GridLayoutManager(6, 2, new Insets(10, 0, 10, 0), -1, -1));
-        panel2.add(kefuMsgPanel, new GridConstraints(1, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        kefuMsgPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "客服消息编辑", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, kefuMsgPanel.getFont())));
-        kefuMsgTypeLabel = new JLabel();
-        kefuMsgTypeLabel.setText("消息类型");
-        kefuMsgPanel.add(kefuMsgTypeLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        kefuMsgPanel.add(spacer1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        msgKefuMsgTypeComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
-        defaultComboBoxModel2.addElement("文本消息");
-        defaultComboBoxModel2.addElement("图文消息");
-        msgKefuMsgTypeComboBox.setModel(defaultComboBoxModel2);
-        kefuMsgPanel.add(msgKefuMsgTypeComboBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        kefuMsgTitleLabel = new JLabel();
-        kefuMsgTitleLabel.setText("内容/标题");
-        kefuMsgPanel.add(kefuMsgTitleLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgKefuMsgTitleTextField = new JTextField();
-        kefuMsgPanel.add(msgKefuMsgTitleTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(380, -1), new Dimension(380, -1), null, 0, false));
-        kefuMsgPicUrlLabel = new JLabel();
-        kefuMsgPicUrlLabel.setText("图片URL");
-        kefuMsgPanel.add(kefuMsgPicUrlLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgKefuPicUrlTextField = new JTextField();
-        kefuMsgPanel.add(msgKefuPicUrlTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        kefuMsgDescLabel = new JLabel();
-        kefuMsgDescLabel.setText("描述");
-        kefuMsgPanel.add(kefuMsgDescLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgKefuDescTextField = new JTextField();
-        kefuMsgPanel.add(msgKefuDescTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        kefuMsgUrlLabel = new JLabel();
-        kefuMsgUrlLabel.setText("跳转URL");
-        kefuMsgPanel.add(kefuMsgUrlLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgKefuUrlTextField = new JTextField();
-        kefuMsgPanel.add(msgKefuUrlTextField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        panel2.add(spacer2, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel5 = new JPanel();
-        panel5.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel5.setMaximumSize(new Dimension(-1, -1));
-        panel5.setMinimumSize(new Dimension(-1, -1));
-        panel5.setPreferredSize(new Dimension(280, -1));
-        messagePanel.setLeftComponent(panel5);
-        final JScrollPane scrollPane3 = new JScrollPane();
-        panel5.add(scrollPane3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        msgHistable = new JTable();
-        msgHistable.setGridColor(new Color(-12236470));
-        msgHistable.setRowHeight(40);
-        scrollPane3.setViewportView(msgHistable);
-        final JPanel panel6 = new JPanel();
-        panel6.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        panel5.add(panel6, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        msgHisTableSelectAllButton = new JButton();
-        msgHisTableSelectAllButton.setText("全选");
-        panel6.add(msgHisTableSelectAllButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        msgHisTableDeleteButton = new JButton();
-        msgHisTableDeleteButton.setText("删除");
-        panel6.add(msgHisTableDeleteButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        panel6.add(spacer3, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        memberPanel = new JPanel();
-        memberPanel.setLayout(new GridLayoutManager(8, 1, new Insets(10, 10, 10, 10), -1, -1));
-        tabbedPane.addTab("准备目标用户", memberPanel);
-        memberTabUpPanel = new JPanel();
-        memberTabUpPanel.setLayout(new GridLayoutManager(6, 6, new Insets(0, 0, 0, 0), -1, -1));
-        memberPanel.add(memberTabUpPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        memberTabCountLabel = new JLabel();
-        Font memberTabCountLabelFont = this.$$$getFont$$$("Microsoft JhengHei UI", -1, 36, memberTabCountLabel.getFont());
-        if (memberTabCountLabelFont != null) {
-            memberTabCountLabel.setFont(memberTabCountLabelFont);
-        }
-        memberTabCountLabel.setForeground(new Color(-276358));
-        memberTabCountLabel.setText("0");
-        memberTabUpPanel.add(memberTabCountLabel, new GridConstraints(0, 0, 4, 3, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberTabImportProgressLabel = new JLabel();
-        memberTabImportProgressLabel.setText("导入进度");
-        memberTabUpPanel.add(memberTabImportProgressLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberTabImportProgressBar = new JProgressBar();
-        memberTabUpPanel.add(memberTabImportProgressBar, new GridConstraints(4, 1, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer4 = new Spacer();
-        memberTabUpPanel.add(spacer4, new GridConstraints(0, 5, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final JLabel label4 = new JLabel();
-        label4.setText("已导入");
-        memberTabUpPanel.add(label4, new GridConstraints(0, 3, 4, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JSeparator separator2 = new JSeparator();
-        memberTabUpPanel.add(separator2, new GridConstraints(5, 0, 1, 6, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        clearImportButton = new JButton();
-        clearImportButton.setText("清除");
-        memberTabUpPanel.add(clearImportButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberTabDownPanel = new JPanel();
-        memberTabDownPanel.setLayout(new GridLayoutManager(1, 4, new Insets(10, 5, 10, 0), -1, -1));
-        memberPanel.add(memberTabDownPanel, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        memberTabDownPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "通过文件导入", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, memberTabDownPanel.getFont())));
-        importFromFileLabel = new JLabel();
-        importFromFileLabel.setHorizontalAlignment(11);
-        importFromFileLabel.setHorizontalTextPosition(4);
-        importFromFileLabel.setText("文件路径（*.txt,*.csv,*.xlsx）");
-        memberTabDownPanel.add(importFromFileLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberFilePathField = new JTextField();
-        memberTabDownPanel.add(memberFilePathField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        importFromFileButton = new JButton();
-        importFromFileButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        importFromFileButton.setText("导入openid/手机号");
-        memberTabDownPanel.add(importFromFileButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberImportExploreButton = new JButton();
-        memberImportExploreButton.setText("浏览");
-        memberTabDownPanel.add(memberImportExploreButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberTabCenterPanel = new JPanel();
-        memberTabCenterPanel.setLayout(new GridLayoutManager(2, 2, new Insets(10, 5, 0, 0), -1, -1));
-        memberPanel.add(memberTabCenterPanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        memberTabCenterPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "通过SQL导入", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, memberTabCenterPanel.getFont())));
-        importFromSqlTextArea = new JTextArea();
-        importFromSqlTextArea.setText("SELECT openid FROM");
-        memberTabCenterPanel.add(importFromSqlTextArea, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 150), null, 0, false));
-        importFromSqlButton = new JButton();
-        importFromSqlButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        importFromSqlButton.setText("导入openid/手机号");
-        memberTabCenterPanel.add(importFromSqlButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer5 = new Spacer();
-        memberTabCenterPanel.add(spacer5, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final Spacer spacer6 = new Spacer();
-        memberPanel.add(spacer6, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final Spacer spacer7 = new Spacer();
-        memberPanel.add(spacer7, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel7 = new JPanel();
-        panel7.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
-        memberPanel.add(panel7, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label5 = new JLabel();
-        Font label5Font = this.$$$getFont$$$(null, Font.BOLD, -1, label5.getFont());
-        if (label5Font != null) {
-            label5.setFont(label5Font);
-        }
-        label5.setText("从历史导入");
-        panel7.add(label5, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberHisComboBox = new JComboBox();
-        panel7.add(memberHisComboBox, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        importFromHisButton = new JButton();
-        importFromHisButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        importFromHisButton.setText("导入openid/手机号");
-        panel7.add(importFromHisButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JSeparator separator3 = new JSeparator();
-        memberPanel.add(separator3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel8 = new JPanel();
-        panel8.setLayout(new GridLayoutManager(2, 6, new Insets(0, 5, 0, 0), -1, -1));
-        memberPanel.add(panel8, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel8.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "通过微信公众平台导入", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel8.getFont())));
-        memberImportTagButton = new JButton();
-        Font memberImportTagButtonFont = this.$$$getFont$$$(null, Font.PLAIN, -1, memberImportTagButton.getFont());
-        if (memberImportTagButtonFont != null) {
-            memberImportTagButton.setFont(memberImportTagButtonFont);
-        }
-        memberImportTagButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        memberImportTagButton.setText("导入选择的标签-取并集");
-        panel8.add(memberImportTagButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label6 = new JLabel();
-        Font label6Font = this.$$$getFont$$$(null, Font.PLAIN, -1, label6.getFont());
-        if (label6Font != null) {
-            label6.setFont(label6Font);
-        }
-        label6.setText("按标签导入");
-        panel8.add(label6, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberImportTagComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
-        memberImportTagComboBox.setModel(defaultComboBoxModel3);
-        panel8.add(memberImportTagComboBox, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberImportTagFreshButton = new JButton();
-        Font memberImportTagFreshButtonFont = this.$$$getFont$$$(null, Font.PLAIN, -1, memberImportTagFreshButton.getFont());
-        if (memberImportTagFreshButtonFont != null) {
-            memberImportTagFreshButton.setFont(memberImportTagFreshButtonFont);
-        }
-        memberImportTagFreshButton.setIcon(new ImageIcon(getClass().getResource("/icon/refresh.png")));
-        memberImportTagFreshButton.setText("刷新可选的标签");
-        panel8.add(memberImportTagFreshButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberImportTagRetainButton = new JButton();
-        Font memberImportTagRetainButtonFont = this.$$$getFont$$$(null, Font.PLAIN, -1, memberImportTagRetainButton.getFont());
-        if (memberImportTagRetainButtonFont != null) {
-            memberImportTagRetainButton.setFont(memberImportTagRetainButtonFont);
-        }
-        memberImportTagRetainButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        memberImportTagRetainButton.setText("导入选择的标签-取交集");
-        panel8.add(memberImportTagRetainButton, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        memberImportAllButton = new JButton();
-        Font memberImportAllButtonFont = this.$$$getFont$$$(null, Font.PLAIN, -1, memberImportAllButton.getFont());
-        if (memberImportAllButtonFont != null) {
-            memberImportAllButton.setFont(memberImportAllButtonFont);
-        }
-        memberImportAllButton.setIcon(new ImageIcon(getClass().getResource("/icon/fromVCS.png")));
-        memberImportAllButton.setText("导入全员（导入所有关注公众号的用户）");
-        panel8.add(memberImportAllButton, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushPanel = new JPanel();
-        pushPanel.setLayout(new GridLayoutManager(3, 1, new Insets(10, 10, 10, 10), -1, -1));
-        tabbedPane.addTab("开始推送", pushPanel);
-        pushUpPanel = new JPanel();
-        pushUpPanel.setLayout(new GridLayoutManager(7, 13, new Insets(0, 0, 0, 0), -1, -1));
-        pushPanel.add(pushUpPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pushSuccessCount = new JLabel();
-        Font pushSuccessCountFont = this.$$$getFont$$$("Microsoft JhengHei UI", -1, 48, pushSuccessCount.getFont());
-        if (pushSuccessCountFont != null) {
-            pushSuccessCount.setFont(pushSuccessCountFont);
-        }
-        pushSuccessCount.setForeground(new Color(-13587376));
-        pushSuccessCount.setText("0");
-        pushUpPanel.add(pushSuccessCount, new GridConstraints(0, 0, 6, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushFailCount = new JLabel();
-        Font pushFailCountFont = this.$$$getFont$$$("Microsoft YaHei UI", -1, 48, pushFailCount.getFont());
-        if (pushFailCountFont != null) {
-            pushFailCount.setFont(pushFailCountFont);
-        }
-        pushFailCount.setForeground(new Color(-2200483));
-        pushFailCount.setText("0");
-        pushUpPanel.add(pushFailCount, new GridConstraints(0, 2, 6, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushTotalProgressLabel = new JLabel();
-        pushTotalProgressLabel.setText("总进度");
-        pushUpPanel.add(pushTotalProgressLabel, new GridConstraints(5, 8, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushTotalProgressBar = new JProgressBar();
-        pushTotalProgressBar.setStringPainted(true);
-        pushUpPanel.add(pushTotalProgressBar, new GridConstraints(5, 9, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label7 = new JLabel();
-        label7.setText("成功");
-        pushUpPanel.add(label7, new GridConstraints(2, 1, 2, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label8 = new JLabel();
-        label8.setText("失败");
-        pushUpPanel.add(label8, new GridConstraints(2, 3, 2, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JSeparator separator4 = new JSeparator();
-        separator4.setOrientation(1);
-        pushUpPanel.add(separator4, new GridConstraints(0, 4, 6, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pushLastTimeLabel = new JLabel();
-        pushLastTimeLabel.setEnabled(true);
-        Font pushLastTimeLabelFont = this.$$$getFont$$$(null, -1, 36, pushLastTimeLabel.getFont());
-        if (pushLastTimeLabelFont != null) {
-            pushLastTimeLabel.setFont(pushLastTimeLabelFont);
-        }
-        pushLastTimeLabel.setForeground(new Color(-6710887));
-        pushLastTimeLabel.setText("0s");
-        pushUpPanel.add(pushLastTimeLabel, new GridConstraints(0, 6, 3, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label9 = new JLabel();
-        label9.setText("耗时");
-        pushUpPanel.add(label9, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushLeftTimeLabel = new JLabel();
-        Font pushLeftTimeLabelFont = this.$$$getFont$$$(null, -1, 36, pushLeftTimeLabel.getFont());
-        if (pushLeftTimeLabelFont != null) {
-            pushLeftTimeLabel.setFont(pushLeftTimeLabelFont);
-        }
-        pushLeftTimeLabel.setForeground(new Color(-6710887));
-        pushLeftTimeLabel.setText("0s");
-        pushUpPanel.add(pushLeftTimeLabel, new GridConstraints(3, 6, 3, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JSeparator separator5 = new JSeparator();
-        separator5.setOrientation(1);
-        pushUpPanel.add(separator5, new GridConstraints(0, 7, 6, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pushTotalThreadLabel = new JLabel();
-        pushTotalThreadLabel.setText("需要线程宝宝个数：");
-        pushUpPanel.add(pushTotalThreadLabel, new GridConstraints(3, 8, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushTotalPageLabel = new JLabel();
-        pushTotalPageLabel.setText("总页数：");
-        pushUpPanel.add(pushTotalPageLabel, new GridConstraints(2, 8, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushTotalCountLabel = new JLabel();
-        pushTotalCountLabel.setText("总用户数：");
-        pushUpPanel.add(pushTotalCountLabel, new GridConstraints(1, 8, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushMsgName = new JLabel();
-        Font pushMsgNameFont = this.$$$getFont$$$(null, -1, 24, pushMsgName.getFont());
-        if (pushMsgNameFont != null) {
-            pushMsgName.setFont(pushMsgNameFont);
-        }
-        pushMsgName.setForeground(new Color(-13587376));
-        pushMsgName.setText("五彩城跳跳糖大蹦床定点推送");
-        pushUpPanel.add(pushMsgName, new GridConstraints(0, 8, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label10 = new JLabel();
-        label10.setText("预计剩余");
-        pushUpPanel.add(label10, new GridConstraints(4, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        scheduleDetailLabel = new JLabel();
-        scheduleDetailLabel.setForeground(new Color(-276358));
-        scheduleDetailLabel.setText("");
-        pushUpPanel.add(scheduleDetailLabel, new GridConstraints(4, 8, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushDownPanel = new JPanel();
-        pushDownPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        pushPanel.add(pushDownPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        pushControlPanel = new JPanel();
-        pushControlPanel.setLayout(new GridLayoutManager(1, 9, new Insets(0, 0, 0, 0), -1, -1));
-        pushDownPanel.add(pushControlPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label11 = new JLabel();
-        label11.setText("每页分配用户数");
-        pushControlPanel.add(label11, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushPageSizeTextField = new JTextField();
-        pushControlPanel.add(pushPageSizeTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
-        final JLabel label12 = new JLabel();
-        label12.setText("每个线程分配的页数");
-        pushControlPanel.add(label12, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushPagePerThreadTextField = new JTextField();
-        pushControlPanel.add(pushPagePerThreadTextField, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
-        ScheduleRunButton = new JButton();
-        ScheduleRunButton.setIcon(new ImageIcon(getClass().getResource("/icon/clock.png")));
-        ScheduleRunButton.setText("按计划执行");
-        pushControlPanel.add(ScheduleRunButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushStopButton = new JButton();
-        pushStopButton.setEnabled(false);
-        pushStopButton.setIcon(new ImageIcon(getClass().getResource("/icon/suspend.png")));
-        pushStopButton.setText("停止");
-        pushControlPanel.add(pushStopButton, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        pushStartButton = new JButton();
-        pushStartButton.setIcon(new ImageIcon(getClass().getResource("/icon/run@2x.png")));
-        pushStartButton.setText("开始");
-        pushControlPanel.add(pushStartButton, new GridConstraints(0, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        dryRunCheckBox = new JCheckBox();
-        dryRunCheckBox.setText("空跑");
-        pushControlPanel.add(dryRunCheckBox, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer8 = new Spacer();
-        pushControlPanel.add(spacer8, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        pushCenterPanel = new JPanel();
-        pushCenterPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-        pushPanel.add(pushCenterPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JScrollPane scrollPane4 = new JScrollPane();
-        pushCenterPanel.add(scrollPane4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pushConsoleTextArea = new JTextArea();
-        scrollPane4.setViewportView(pushConsoleTextArea);
-        final JScrollPane scrollPane5 = new JScrollPane();
-        pushCenterPanel.add(scrollPane5, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pushThreadTable = new JTable();
-        pushThreadTable.setGridColor(new Color(-12236470));
-        pushThreadTable.setRowHeight(40);
-        scrollPane5.setViewportView(pushThreadTable);
-        schedulePanel = new JPanel();
-        schedulePanel.setLayout(new GridLayoutManager(5, 7, new Insets(10, 10, 10, 10), -1, -1));
-        tabbedPane.addTab("计划任务", schedulePanel);
-        runAtThisTimeRadioButton = new JRadioButton();
-        runAtThisTimeRadioButton.setText("在此时间开始推送：");
-        schedulePanel.add(runAtThisTimeRadioButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer9 = new Spacer();
-        schedulePanel.add(spacer9, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer10 = new Spacer();
-        schedulePanel.add(spacer10, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        startAtThisTimeTextField = new JTextField();
-        startAtThisTimeTextField.setText("");
-        schedulePanel.add(startAtThisTimeTextField, new GridConstraints(0, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        runPerDayRadioButton = new JRadioButton();
-        runPerDayRadioButton.setText("每天固定时间开始推送：");
-        schedulePanel.add(runPerDayRadioButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        startPerDayTextField = new JTextField();
-        schedulePanel.add(startPerDayTextField, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        runPerWeekRadioButton = new JRadioButton();
-        runPerWeekRadioButton.setText("每周固定时间开始推送：");
-        schedulePanel.add(runPerWeekRadioButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label13 = new JLabel();
-        label13.setText("yyyy-MM-dd HH:mm:ss");
-        schedulePanel.add(label13, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label14 = new JLabel();
-        label14.setText("HH:mm:ss");
-        schedulePanel.add(label14, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label15 = new JLabel();
-        label15.setText("HH:mm:ss");
-        schedulePanel.add(label15, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        scheduleSaveButton = new JButton();
-        scheduleSaveButton.setText("保存");
-        schedulePanel.add(scheduleSaveButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label16 = new JLabel();
-        label16.setText("每周");
-        schedulePanel.add(label16, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label17 = new JLabel();
-        label17.setText("的");
-        schedulePanel.add(label17, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        schedulePerWeekComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel4 = new DefaultComboBoxModel();
-        defaultComboBoxModel4.addElement("一");
-        defaultComboBoxModel4.addElement("二");
-        defaultComboBoxModel4.addElement("三");
-        defaultComboBoxModel4.addElement("四");
-        defaultComboBoxModel4.addElement("五");
-        defaultComboBoxModel4.addElement("六");
-        defaultComboBoxModel4.addElement("日");
-        schedulePerWeekComboBox.setModel(defaultComboBoxModel4);
-        schedulePanel.add(schedulePerWeekComboBox, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        startPerWeekTextField = new JTextField();
-        schedulePanel.add(startPerWeekTextField, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        settingPanel = new JPanel();
-        settingPanel.setLayout(new GridLayoutManager(1, 1, new Insets(10, 10, 10, 10), -1, -1));
-        Font settingPanelFont = this.$$$getFont$$$("Microsoft YaHei UI", -1, -1, settingPanel.getFont());
-        if (settingPanelFont != null) {
-            settingPanel.setFont(settingPanelFont);
-        }
-        tabbedPane.addTab("设置", settingPanel);
-        settingScrollPane = new JScrollPane();
-        settingPanel.add(settingScrollPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel13 = new JPanel();
-        panel13.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, -1));
-        settingScrollPane.setViewportView(panel13);
-        final JPanel panel14 = new JPanel();
-        panel14.setLayout(new GridLayoutManager(6, 3, new Insets(15, 15, 10, 0), -1, -1));
-        Font panel14Font = this.$$$getFont$$$("Microsoft YaHei UI", -1, -1, panel14.getFont());
-        if (panel14Font != null) {
-            panel14.setFont(panel14Font);
-        }
-        panel13.add(panel14, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel14.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "微信公众号", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel14.getFont())));
-        final JLabel label18 = new JLabel();
-        label18.setText("AppID");
-        panel14.add(label18, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer13 = new Spacer();
-        panel14.add(spacer13, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer14 = new Spacer();
-        panel14.add(spacer14, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        wechatAppIdTextField = new JTextField();
-        panel14.add(wechatAppIdTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label19 = new JLabel();
-        label19.setText("AppSecret");
-        panel14.add(label19, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wechatAppSecretPasswordField = new JPasswordField();
-        panel14.add(wechatAppSecretPasswordField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label20 = new JLabel();
-        label20.setText("Token");
-        panel14.add(label20, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wechatTokenPasswordField = new JPasswordField();
-        panel14.add(wechatTokenPasswordField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label21 = new JLabel();
-        label21.setText("AES Key");
-        panel14.add(label21, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wechatAesKeyPasswordField = new JPasswordField();
-        panel14.add(wechatAesKeyPasswordField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel15 = new JPanel();
-        panel15.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel14.add(panel15, new GridConstraints(4, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingMpInfoSaveButton = new JButton();
-        settingMpInfoSaveButton.setText("保存");
-        panel15.add(settingMpInfoSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer15 = new Spacer();
-        panel15.add(spacer15, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer16 = new Spacer();
-        panel13.add(spacer16, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel16 = new JPanel();
-        panel16.setLayout(new GridLayoutManager(6, 4, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel16, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel16.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "MySQL数据库", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel16.getFont())));
-        final JLabel label22 = new JLabel();
-        label22.setText("数据库地址");
-        panel16.add(label22, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer17 = new Spacer();
-        panel16.add(spacer17, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer18 = new Spacer();
-        panel16.add(spacer18, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        mysqlUrlTextField = new JTextField();
-        panel16.add(mysqlUrlTextField, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label23 = new JLabel();
-        label23.setText("数据库名称");
-        panel16.add(label23, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        mysqlDatabaseTextField = new JTextField();
-        panel16.add(mysqlDatabaseTextField, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label24 = new JLabel();
-        label24.setText("用户名");
-        panel16.add(label24, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        mysqlUserTextField = new JTextField();
-        panel16.add(mysqlUserTextField, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label25 = new JLabel();
-        label25.setText("密码");
-        panel16.add(label25, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        mysqlPasswordField = new JPasswordField();
-        panel16.add(mysqlPasswordField, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel17 = new JPanel();
-        panel17.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        panel16.add(panel17, new GridConstraints(4, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingTestDbLinkButton = new JButton();
-        settingTestDbLinkButton.setText("测试连接");
-        panel17.add(settingTestDbLinkButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer19 = new Spacer();
-        panel17.add(spacer19, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        settingDbInfoSaveButton = new JButton();
-        settingDbInfoSaveButton.setText("保存");
-        panel17.add(settingDbInfoSaveButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel18 = new JPanel();
-        panel18.setLayout(new GridLayoutManager(6, 3, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel18, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel18.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "阿里大于短信", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel18.getFont())));
-        final JLabel label26 = new JLabel();
-        label26.setText("SMS ServerUrl");
-        panel18.add(label26, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer20 = new Spacer();
-        panel18.add(spacer20, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer21 = new Spacer();
-        panel18.add(spacer21, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        aliServerUrlTextField = new JTextField();
-        panel18.add(aliServerUrlTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label27 = new JLabel();
-        label27.setText("AppKey");
-        panel18.add(label27, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        aliAppKeyPasswordField = new JPasswordField();
-        panel18.add(aliAppKeyPasswordField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label28 = new JLabel();
-        label28.setText("AppSecret");
-        panel18.add(label28, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label29 = new JLabel();
-        label29.setText("短信签名");
-        panel18.add(label29, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        aliSignTextField = new JTextField();
-        panel18.add(aliSignTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        aliAppSecretPasswordField = new JPasswordField();
-        panel18.add(aliAppSecretPasswordField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel19 = new JPanel();
-        panel19.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel18.add(panel19, new GridConstraints(4, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingAliInfoSaveButton = new JButton();
-        settingAliInfoSaveButton.setText("保存");
-        panel19.add(settingAliInfoSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer22 = new Spacer();
-        panel19.add(spacer22, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final JPanel panel20 = new JPanel();
-        panel20.setLayout(new GridLayoutManager(4, 3, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel20, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel20.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "外观", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel20.getFont())));
-        final JLabel label30 = new JLabel();
-        label30.setText("主题风格");
-        panel20.add(label30, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer23 = new Spacer();
-        panel20.add(spacer23, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        settingThemeComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
-        defaultComboBoxModel5.addElement("Darcula(推荐)");
-        defaultComboBoxModel5.addElement("BeautyEye");
-        defaultComboBoxModel5.addElement("weblaf");
-        defaultComboBoxModel5.addElement("系统默认");
-        defaultComboBoxModel5.addElement("Windows");
-        defaultComboBoxModel5.addElement("Nimbus");
-        defaultComboBoxModel5.addElement("Metal");
-        defaultComboBoxModel5.addElement("Motif");
-        settingThemeComboBox.setModel(defaultComboBoxModel5);
-        panel20.add(settingThemeComboBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label31 = new JLabel();
-        label31.setText("字体");
-        panel20.add(label31, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        settingFontNameComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel6 = new DefaultComboBoxModel();
-        defaultComboBoxModel6.addElement("Microsoft YaHei");
-        defaultComboBoxModel6.addElement("Microsoft YaHei Light");
-        defaultComboBoxModel6.addElement("Microsoft YaHei UI");
-        defaultComboBoxModel6.addElement("Microsoft YaHei UI Light");
-        settingFontNameComboBox.setModel(defaultComboBoxModel6);
-        panel20.add(settingFontNameComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label32 = new JLabel();
-        label32.setText("字号");
-        panel20.add(label32, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        settingFontSizeComboBox = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel7 = new DefaultComboBoxModel();
-        defaultComboBoxModel7.addElement("10");
-        defaultComboBoxModel7.addElement("11");
-        defaultComboBoxModel7.addElement("12");
-        defaultComboBoxModel7.addElement("13");
-        defaultComboBoxModel7.addElement("14");
-        defaultComboBoxModel7.addElement("15");
-        defaultComboBoxModel7.addElement("16");
-        defaultComboBoxModel7.addElement("17");
-        defaultComboBoxModel7.addElement("18");
-        defaultComboBoxModel7.addElement("19");
-        defaultComboBoxModel7.addElement("20");
-        defaultComboBoxModel7.addElement("21");
-        defaultComboBoxModel7.addElement("22");
-        defaultComboBoxModel7.addElement("23");
-        defaultComboBoxModel7.addElement("24");
-        defaultComboBoxModel7.addElement("25");
-        defaultComboBoxModel7.addElement("26");
-        settingFontSizeComboBox.setModel(defaultComboBoxModel7);
-        panel20.add(settingFontSizeComboBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel21 = new JPanel();
-        panel21.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel20.add(panel21, new GridConstraints(3, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingAppearanceSaveButton = new JButton();
-        settingAppearanceSaveButton.setText("保存");
-        panel21.add(settingAppearanceSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer24 = new Spacer();
-        panel21.add(spacer24, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final JPanel panel22 = new JPanel();
-        panel22.setLayout(new GridLayoutManager(2, 2, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel22, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel22.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "常规", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel22.getFont())));
-        autoCheckUpdateCheckBox = new JCheckBox();
-        autoCheckUpdateCheckBox.setText("启动时自动检查更新");
-        panel22.add(autoCheckUpdateCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer25 = new Spacer();
-        panel22.add(spacer25, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer26 = new Spacer();
-        panel22.add(spacer26, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JPanel panel23 = new JPanel();
-        panel23.setLayout(new GridLayoutManager(5, 4, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel23, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel23.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "阿里云短信", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel23.getFont())));
-        final Spacer spacer27 = new Spacer();
-        panel23.add(spacer27, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JLabel label33 = new JLabel();
-        label33.setText("AccessKeyId");
-        panel23.add(label33, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label34 = new JLabel();
-        label34.setText("AccessKeySecret");
-        panel23.add(label34, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label35 = new JLabel();
-        label35.setText("短信签名");
-        panel23.add(label35, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        aliyunSignTextField = new JTextField();
-        panel23.add(aliyunSignTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        aliyunAccessKeySecretTextField = new JPasswordField();
-        panel23.add(aliyunAccessKeySecretTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel24 = new JPanel();
-        panel24.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel23.add(panel24, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingAliyunSaveButton = new JButton();
-        settingAliyunSaveButton.setText("保存");
-        panel24.add(settingAliyunSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer28 = new Spacer();
-        panel24.add(spacer28, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer29 = new Spacer();
-        panel23.add(spacer29, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        aliyunAccessKeyIdTextField = new JTextField();
-        panel23.add(aliyunAccessKeyIdTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel25 = new JPanel();
-        panel25.setLayout(new GridLayoutManager(6, 3, new Insets(15, 15, 10, 0), -1, -1));
-        Font panel25Font = this.$$$getFont$$$("Microsoft YaHei UI", -1, -1, panel25.getFont());
-        if (panel25Font != null) {
-            panel25.setFont(panel25Font);
-        }
-        panel13.add(panel25, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel25.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "微信小程序", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel25.getFont())));
-        final JLabel label36 = new JLabel();
-        label36.setText("AppID");
-        panel25.add(label36, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer30 = new Spacer();
-        panel25.add(spacer30, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer31 = new Spacer();
-        panel25.add(spacer31, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        miniAppAppIdTextField = new JTextField();
-        panel25.add(miniAppAppIdTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label37 = new JLabel();
-        label37.setText("AppSecret");
-        panel25.add(label37, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        miniAppAppSecretPasswordField = new JPasswordField();
-        panel25.add(miniAppAppSecretPasswordField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label38 = new JLabel();
-        label38.setText("Token");
-        panel25.add(label38, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        miniAppTokenPasswordField = new JPasswordField();
-        miniAppTokenPasswordField.setText("");
-        panel25.add(miniAppTokenPasswordField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label39 = new JLabel();
-        label39.setText("AES Key");
-        panel25.add(label39, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        miniAppAesKeyPasswordField = new JPasswordField();
-        panel25.add(miniAppAesKeyPasswordField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel26 = new JPanel();
-        panel26.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel25.add(panel26, new GridConstraints(4, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingMaInfoSaveButton = new JButton();
-        settingMaInfoSaveButton.setText("保存");
-        panel26.add(settingMaInfoSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer32 = new Spacer();
-        panel26.add(spacer32, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final JPanel panel27 = new JPanel();
-        panel27.setLayout(new GridLayoutManager(5, 4, new Insets(15, 15, 10, 0), -1, -1));
-        panel13.add(panel27, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel27.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "腾讯云短信", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, Font.BOLD, -1, panel27.getFont())));
-        final Spacer spacer33 = new Spacer();
-        panel27.add(spacer33, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JLabel label40 = new JLabel();
-        label40.setText("AppId");
-        panel27.add(label40, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label41 = new JLabel();
-        label41.setText("AppKey");
-        panel27.add(label41, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label42 = new JLabel();
-        label42.setText("短信签名");
-        panel27.add(label42, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        txyunSignTextField = new JTextField();
-        panel27.add(txyunSignTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        txyunAppKeyTextField = new JPasswordField();
-        txyunAppKeyTextField.setText("");
-        panel27.add(txyunAppKeyTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel28 = new JPanel();
-        panel28.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel27.add(panel28, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        settingTxyunSaveButton = new JButton();
-        settingTxyunSaveButton.setText("保存");
-        panel28.add(settingTxyunSaveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer34 = new Spacer();
-        panel28.add(spacer34, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer35 = new Spacer();
-        panel27.add(spacer35, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        txyunAppIdTextField = new JTextField();
-        panel27.add(txyunAppIdTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        msgTypeLabel.setLabelFor(msgTypeComboBox);
-        msgNameLabel.setLabelFor(msgNameField);
-        previewMemberLabel.setLabelFor(previewUserField);
-        templateIdLabel.setLabelFor(msgTemplateIdTextField);
-        templateUrlLabel.setLabelFor(msgTemplateUrlTextField);
-        templateMsgNameLabel.setLabelFor(templateDataNameTextField);
-        templateMsgValueLabel.setLabelFor(templateDataValueTextField);
-        templateMsgColorLabel.setLabelFor(templateDataColorTextField);
-        templateMiniProgramAppidLabel.setLabelFor(msgTemplateMiniAppidTextField);
-        templateMiniProgramPagePathLabel.setLabelFor(msgTemplateMiniPagePathTextField);
-        templateKeyWordLabel.setLabelFor(msgTemplateUrlTextField);
-        kefuMsgTypeLabel.setLabelFor(msgKefuMsgTypeComboBox);
-        kefuMsgTitleLabel.setLabelFor(msgKefuMsgTitleTextField);
-        kefuMsgPicUrlLabel.setLabelFor(msgKefuPicUrlTextField);
-        kefuMsgDescLabel.setLabelFor(msgKefuDescTextField);
-        kefuMsgUrlLabel.setLabelFor(msgKefuUrlTextField);
+        //EC数据
+        ecPanel = new JPanel();
+        ecPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab("EC数据", ecPanel);
+        ecSourceLabel = new JLabel();
+        ecSourceLabel.setText("原始目录");
+        ecPanel.add(ecSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ecSourceTextField = new JTextField();
+        ecSourceTextField.setText(ecTaskPropertie.GetPathIn());
+        ecPanel.add(ecSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        ecSourceButton = new JButton();
+        ecSourceButton.setText("浏览");
+        ecPanel.add(ecSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        ecDestLabel = new JLabel();
+        ecDestLabel.setText("输出目录");
+        ecPanel.add(ecDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ecDestTextField = new JTextField();
+        ecDestTextField.setText(ecTaskPropertie.GetPathOut());
+        ecPanel.add(ecDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        ecDestButton = new JButton();
+        ecDestButton.setText("浏览");
+        ecPanel.add(ecDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        ecCronLabel = new JLabel();
+        ecCronLabel.setText("执行时间");
+        ecPanel.add(ecCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        ecHourRadio = new JRadioButton();
+        ecPanel.add(ecHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ecHourLabel = new JLabel();
+        ecHourLabel.setText("每小时执行一次");
+        if(ecTaskPropertie.GetRadioIndex() == 1)
+            ecHourRadio.setSelected(true);
+        ecPanel.add(ecHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        ec10minRadio = new JRadioButton();
+        ecPanel.add(ec10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        ec10minLabel = new JLabel();
+        ec10minLabel.setText("每10分钟执行一次");
+        if(ecTaskPropertie.GetRadioIndex() == 2)
+            ec10minRadio.setSelected(true);
+        ecPanel.add(ec10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        ecStartButton = new JButton();
+        ecStartButton.setText("启动");
+        ecPanel.add(ecStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        ecStopButton = new JButton();
+        ecStopButton.setText("停止");
+        ecPanel.add(ecStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        ecDelLabel = new JLabel();
+        ecDelLabel.setText("数据保留天数:");
+        ecPanel.add(ecDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        ecDelTime = new JComboBox();
+        ecDelTime.addItem("3");
+        ecDelTime.addItem("2");
+        ecDelTime.addItem("1");
+        ecDelTime.setSelectedItem(ecTaskPropertie.GetDataKeepTime());
+        ecPanel.add(ecDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+
+        //T799数据
+        t799Panel = new JPanel();
+        t799Panel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab(" T799 ", t799Panel);
+        t799SourceLabel = new JLabel();
+        t799SourceLabel.setText("原始目录");
+        t799Panel.add(t799SourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        t799SourceTextField = new JTextField();
+        t799SourceTextField.setText(t799TaskPropertie.GetPathIn());
+        t799Panel.add(t799SourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        t799SourceButton = new JButton();
+        t799SourceButton.setText("浏览");
+        t799Panel.add(t799SourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        t799DestLabel = new JLabel();
+        t799DestLabel.setText("输出目录");
+        t799Panel.add(t799DestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        t799DestTextField = new JTextField();
+        t799DestTextField.setText(t799TaskPropertie.GetPathOut());
+        t799Panel.add(t799DestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        t799DestButton = new JButton();
+        t799DestButton.setText("浏览");
+        t799Panel.add(t799DestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        t799CronLabel = new JLabel();
+        t799CronLabel.setText("执行时间");
+        t799Panel.add(t799CronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        t799HourRadio = new JRadioButton();
+        t799Panel.add(t799HourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        t799HourLabel = new JLabel();
+        t799HourLabel.setText("每小时执行一次");
+        if(t799TaskPropertie.GetRadioIndex() == 1)
+            t799HourRadio.setSelected(true);
+        t799Panel.add(t799HourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        t79910minRadio = new JRadioButton();
+        t799Panel.add(t79910minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        t79910minLabel = new JLabel();
+        t79910minLabel.setText("每10分钟执行一次");
+        if(t799TaskPropertie.GetRadioIndex() == 2)
+            t79910minRadio.setSelected(true);
+        t799Panel.add(t79910minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        t799StartButton = new JButton();
+        t799StartButton.setText("启动");
+        t799Panel.add(t799StartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        t799StopButton = new JButton();
+        t799StopButton.setText("停止");
+        t799Panel.add(t799StopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        t799DelLabel = new JLabel();
+        t799DelLabel.setText("数据保留天数:");
+        t799Panel.add(t799DelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        t799DelTime = new JComboBox();
+        t799DelTime.addItem("3");
+        t799DelTime.addItem("2");
+        t799DelTime.addItem("1");
+        t799DelTime.setSelectedItem(t799TaskPropertie.GetDataKeepTime());
+        t799Panel.add(t799DelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        
+        //日本传真图
+        japanPanel = new JPanel();
+        japanPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab(" 日本传真图 ", japanPanel);
+        japanSourceLabel = new JLabel();
+        japanSourceLabel.setText("原始目录");
+        japanPanel.add(japanSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        japanSourceTextField = new JTextField();
+        japanSourceTextField.setText(japanTaskPropertie.GetPathIn());
+        japanPanel.add(japanSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        japanSourceButton = new JButton();
+        japanSourceButton.setText("浏览");
+        japanPanel.add(japanSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        japanDestLabel = new JLabel();
+        japanDestLabel.setText("输出目录");
+        japanPanel.add(japanDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        japanDestTextField = new JTextField();
+        japanDestTextField.setText(japanTaskPropertie.GetPathOut());
+        japanPanel.add(japanDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        japanDestButton = new JButton();
+        japanDestButton.setText("浏览");
+        japanPanel.add(japanDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        japanCronLabel = new JLabel();
+        japanCronLabel.setText("执行时间");
+        japanPanel.add(japanCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        japanHourRadio = new JRadioButton();
+        japanPanel.add(japanHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        japanHourLabel = new JLabel();
+        japanHourLabel.setText("每小时执行一次");
+        if(japanTaskPropertie.GetRadioIndex() == 1)
+            japanHourRadio.setSelected(true);
+        japanPanel.add(japanHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        japan10minRadio = new JRadioButton();
+        japanPanel.add(japan10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        japan10minLabel = new JLabel();
+        japan10minLabel.setText("每10分钟执行一次");
+        if(japanTaskPropertie.GetRadioIndex() == 2)
+            japan10minRadio.setSelected(true);
+        japanPanel.add(japan10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        japanStartButton = new JButton();
+        japanStartButton.setText("启动");
+        japanPanel.add(japanStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        japanStopButton = new JButton();
+        japanStopButton.setText("停止");
+        japanPanel.add(japanStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        japanDelLabel = new JLabel();
+        japanDelLabel.setText("数据保留天数:");
+        japanPanel.add(japanDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        japanDelTime = new JComboBox();
+        japanDelTime.addItem("3");
+        japanDelTime.addItem("2");
+        japanDelTime.addItem("1");
+        japanDelTime.setSelectedItem(japanTaskPropertie.GetDataKeepTime());
+        japanPanel.add(japanDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        //雷达图
+        radarPanel = new JPanel();
+        radarPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        Font settingPanelFont = this.$$$getFont$$$("Microsoft YaHei UI", -1, -1, radarPanel.getFont());
+        if (settingPanelFont != null) radarPanel.setFont(settingPanelFont);
+        tabbedPane.addTab(" 雷达图 ", radarPanel);
+        radarSourceLabel = new JLabel();
+        radarSourceLabel.setText("原始目录");
+        radarPanel.add(radarSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        radarSourceTextField = new JTextField();
+        radarSourceTextField.setText(radarTaskPropertie.GetPathIn());
+        radarPanel.add(radarSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        radarSourceButton = new JButton();
+        radarSourceButton.setText("浏览");
+        radarPanel.add(radarSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        radarDestLabel = new JLabel();
+        radarDestLabel.setText("输出目录");
+        radarPanel.add(radarDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        radarDestTextField = new JTextField();
+        radarDestTextField.setText(radarTaskPropertie.GetPathOut());
+        radarPanel.add(radarDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        radarDestButton = new JButton();
+        radarDestButton.setText("浏览");
+        radarPanel.add(radarDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        radarCronLabel = new JLabel();
+        radarCronLabel.setText("执行时间");
+        radarPanel.add(radarCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        radarHourRadio = new JRadioButton();
+        radarPanel.add(radarHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        radarHourLabel = new JLabel();
+        radarHourLabel.setText("每小时执行一次");
+        if(radarTaskPropertie.GetRadioIndex() == 1)
+            radarHourRadio.setSelected(true);
+        radarPanel.add(radarHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        radar10minRadio = new JRadioButton();
+        radarPanel.add(radar10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        radar10minLabel = new JLabel();
+        radar10minLabel.setText("每10分钟执行一次");
+        if(radarTaskPropertie.GetRadioIndex() == 2)
+            radar10minRadio.setSelected(true);
+        radarPanel.add(radar10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        radarStartButton = new JButton();
+        radarStartButton.setText("启动");
+        radarPanel.add(radarStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        radarStopButton = new JButton();
+        radarStopButton.setText("停止");
+        radarPanel.add(radarStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        radarDelLabel = new JLabel();
+        radarDelLabel.setText("数据保留天数:");
+        radarPanel.add(radarDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        radarDelTime = new JComboBox();
+        radarDelTime.addItem("3");
+        radarDelTime.addItem("2");
+        radarDelTime.addItem("1");
+        radarDelTime.setSelectedItem(radarTaskPropertie.GetDataKeepTime());
+        radarPanel.add(radarDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+
+        //风云2D卫星
+        fy2dPanel = new JPanel();
+        fy2dPanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        //tabbedPane.addTab("风云2D卫星", fy2dPanel);
+        fy2dSourceLabel = new JLabel();
+        fy2dSourceLabel.setText("原始目录");
+        fy2dPanel.add(fy2dSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2dSourceTextField = new JTextField();
+        fy2dSourceTextField.setText(fydTaskPropertie.GetPathIn());
+        fy2dPanel.add(fy2dSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2dSourceButton = new JButton();
+        fy2dSourceButton.setText("浏览");
+        fy2dPanel.add(fy2dSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2dDestLabel = new JLabel();
+        fy2dDestLabel.setText("输出目录");
+        fy2dPanel.add(fy2dDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2dDestTextField = new JTextField();
+        fy2dDestTextField.setText(fydTaskPropertie.GetPathOut());
+        fy2dPanel.add(fy2dDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2dDestButton = new JButton();
+        fy2dDestButton.setText("浏览");
+        fy2dPanel.add(fy2dDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2dCronLabel = new JLabel();
+        fy2dCronLabel.setText("执行时间");
+        fy2dPanel.add(fy2dCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        fy2dHourRadio = new JRadioButton();
+        fy2dPanel.add(fy2dHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2dHourLabel = new JLabel();
+        fy2dHourLabel.setText("每小时执行一次");
+        if(fydTaskPropertie.GetRadioIndex() == 1)
+            fy2dHourRadio.setSelected(true);
+        fy2dPanel.add(fy2dHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2d10minRadio = new JRadioButton();
+        fy2dPanel.add(fy2d10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2d10minLabel = new JLabel();
+        fy2d10minLabel.setText("每10分钟执行一次");
+        if(fydTaskPropertie.GetRadioIndex() == 2)
+            fy2d10minRadio.setSelected(true);
+        fy2dPanel.add(fy2d10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        
+        fy2dStartButton = new JButton();
+        fy2dStartButton.setText("启动");
+        fy2dPanel.add(fy2dStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2dStopButton = new JButton();
+        fy2dStopButton.setText("停止");
+        fy2dPanel.add(fy2dStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        fy2dDelLabel = new JLabel();
+        fy2dDelLabel.setText("数据保留天数:");
+        fy2dPanel.add(fy2dDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        fy2dDelTime = new JComboBox();
+        fy2dDelTime.addItem("3");
+        fy2dDelTime.addItem("2");
+        fy2dDelTime.addItem("1");
+        fy2dDelTime.setSelectedItem(fydTaskPropertie.GetDataKeepTime());
+        fy2dPanel.add(fy2dDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        //风云2E卫星
+        fy2ePanel = new JPanel();
+        fy2ePanel.setLayout(new GridLayoutManager(6, 7, new Insets(10, 10, 10, 10), -1, -1));
+        tabbedPane.addTab("风云2E卫星", fy2ePanel);
+        fy2eSourceLabel = new JLabel();
+        fy2eSourceLabel.setText("原始目录");
+        fy2ePanel.add(fy2eSourceLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2eSourceTextField = new JTextField();
+        fy2eSourceTextField.setText(fyeTaskPropertie.GetPathIn());
+        fy2ePanel.add(fy2eSourceTextField, new GridConstraints(0, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2eSourceButton = new JButton();
+        fy2eSourceButton.setText("浏览");
+        fy2ePanel.add(fy2eSourceButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2eDestLabel = new JLabel();
+        fy2eDestLabel.setText("输出目录");
+        fy2ePanel.add(fy2eDestLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2eDestTextField = new JTextField();
+        fy2eDestTextField.setText(fyeTaskPropertie.GetPathOut());
+        fy2ePanel.add(fy2eDestTextField, new GridConstraints(1, 1, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2eDestButton = new JButton();
+        fy2eDestButton.setText("浏览");
+        fy2ePanel.add(fy2eDestButton, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2eCronLabel = new JLabel();
+        fy2eCronLabel.setText("执行时间");
+        fy2ePanel.add(fy2eCronLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        fy2eHourRadio = new JRadioButton();
+        fy2ePanel.add(fy2eHourRadio, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2eHourLabel = new JLabel();
+        fy2eHourLabel.setText("每小时执行一次");
+        if(fyeTaskPropertie.GetRadioIndex() == 1)
+            fy2eHourRadio.setSelected(true);
+        fy2ePanel.add(fy2eHourLabel, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        fy2e10minRadio = new JRadioButton();
+        fy2ePanel.add(fy2e10minRadio, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fy2e10minLabel = new JLabel();
+        fy2e10minLabel.setText("每10分钟执行一次");
+        if(fyeTaskPropertie.GetRadioIndex() == 2)
+            fy2e10minRadio.setSelected(true);
+        fy2ePanel.add(fy2e10minLabel, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+
+        fy2eStartButton = new JButton();
+        fy2eStartButton.setText("启动");
+        fy2ePanel.add(fy2eStartButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+        fy2eStopButton = new JButton();
+        fy2eStopButton.setText("停止");
+        fy2ePanel.add(fy2eStopButton, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), null, 0, false));
+
+        fy2eDelLabel = new JLabel();
+        fy2eDelLabel.setText("数据保留天数:");
+        fy2ePanel.add(fy2eDelLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+        fy2eDelTime = new JComboBox();
+        fy2eDelTime.addItem("3");
+        fy2eDelTime.addItem("2");
+        fy2eDelTime.addItem("1");
+        fy2eDelTime.setSelectedItem(fyeTaskPropertie.GetDataKeepTime());
+        fy2ePanel.add(fy2eDelTime, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
     }
 
     /**
