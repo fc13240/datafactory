@@ -56,54 +56,78 @@ public class HighObservationToMicaps2 {
         HighObservationParseJob hs = new HighObservationParseJob();
         File srcDir = new File(sourceFolder);
         if (!srcDir.exists()) {
+            logger.info("高空数据目录不存在，或连接超时");
             return;
         }
         if (srcDir.exists() && srcDir.isDirectory()) {
             File statusFile = new File(statusFileName);
             // 状态文件2小时重写
-            if (statusFile.exists()
-                    && LocalDateTime.ofInstant(Instant.ofEpochMilli(statusFile.lastModified()),
-                    ZoneId.systemDefault()).isBefore(LocalDateTime.now().minusHours(2))) {
-                String line;
-                BufferedReader br;
-                try {
-                    br = new BufferedReader(new FileReader(statusFileName));
-                    List<String> oldlist = new ArrayList<>();
-                    //读取原状态文件内容，再把旧文件去掉
-                    while (null != (line = br.readLine())) {
-                        String[] status = line.split("\\s+");
-                        if (status[1].equals("1")) {
-                            oldlist.add(status[0]);
-                        }
-                    }
-                    br.close();
-                    //读取就旧数据，然后删除新建
-                    boolean flag = statusFile.delete();
-                    String[] fileNames = srcDir.list();
-                    ArrayList<String> newlist = new ArrayList<>(Arrays.asList(fileNames));
-                    newlist.removeAll(oldlist);
-                    StringBuilder logsb = new StringBuilder();
-                    for (String fileName : newlist) {  //文件名 状态 时间戳 初始化时间最早
-                        if(fileNamePattern.matcher(fileName).matches()) {
-                            logsb.append(fileName).append(" ").append("0").append(" ").append(LocalDateTime.now().minusHours(3).format(dtf)).append(c_string);
-                        }
-                    }
-                    FileUtil.write(statusFileName, logsb.toString(), "UTF-8");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
+            if (statusFile.exists()) {
+                statusFile.delete();
+//                String line;
+//                BufferedReader br;
+//                try {
+//                    br = new BufferedReader(new FileReader(statusFileName));
+//                    List<String> oldlist = new ArrayList<>();
+//                    //读取原状态文件内容，再把旧文件去掉
+//                    while (null != (line = br.readLine())) {
+//                        String[] status = line.split("\\s+");
+//                        if (status[1].equals("1")) {
+//                            oldlist.add(status[0]);
+//                        }
+//                    }
+//                    br.close();
+//
+//                    String[] fileNames = srcDir.list();
+//                    fileNames = Arrays.stream(fileNames).sorted((f1,f2) -> {
+//                        if(f1.substring(2).compareTo(f2.substring(2)) > 0) {
+//                            return -1;
+//                        } else {
+//                            return 1;
+//                        }
+//                    }).toArray(String[]::new);
+//                    ArrayList<String> newlist = new ArrayList<>(Arrays.asList(fileNames));
+//                    newlist.removeAll(oldlist);
+//                    //全部处理完或者超过1小时没更新
+//                    if((newlist.size() > 0) || LocalDateTime.ofInstant(Instant.ofEpochMilli(statusFile.lastModified()),
+//                            ZoneId.systemDefault()).isBefore(LocalDateTime.now().minusHours(1))){
+//                        //读取就旧数据，然后删除新建
+//                        boolean flag = statusFile.delete();
+//                        StringBuilder logsb = new StringBuilder();
+//                        for (String fileName : newlist) {  //文件名 状态 时间戳 初始化时间最早
+//                            if(fileNamePattern.matcher(fileName).matches()) {
+//                                logsb.append(fileName).append(" ").append("0").append(" ").append(LocalDateTime.now().minusHours(3).format(dtf)).append(c_string);
+//                            }
+//                        }
+//                        FileUtil.write(statusFileName, logsb.toString(), "UTF-8");
+//                    }
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e2) {
+//                    e2.printStackTrace();
+//                }
             }
             //文件不存在创建状态记录文件
             if (!statusFile.exists()) {
                 System.out.println("正在初始化状态文件 " + statusFileName + "... ...");
                 String[] fileNames = srcDir.list();
+                fileNames = Arrays.stream(fileNames).sorted((f1,f2) -> {
+                    if(f1.substring(2).compareTo(f2.substring(2)) > 0) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }).toArray(String[]::new);
                 // 由于文件量过大，先获取文件名称列表，写入状态文件，再处理。
                 StringBuilder logsb = new StringBuilder();
-                for (String fileName : fileNames) {  //文件名 状态 时间戳 初始化时间最早
-                    if (fileNamePattern.matcher(fileName).matches()) {
-                        logsb.append(fileName).append(" ").append("0").append(" ").append(LocalDateTime.now().minusHours(3).format(dtf)).append(c_string);
+                int n = 0;
+                for (int i = 0; i < fileNames.length; i ++) {  //文件名 状态 时间戳 初始化时间最早
+                    if(fileNamePattern.matcher(fileNames[i]).matches()) {
+                        logsb.append(fileNames[i]).append(" ").append("0").append(" ").append(LocalDateTime.now().minusHours(3).format(dtf)).append(c_string);
+                        n++;
+                        if(n > 500) {
+                            break;
+                        }
                     }
                 }
                 FileUtil.write(statusFileName, logsb.toString(), "UTF-8");
@@ -113,14 +137,13 @@ public class HighObservationToMicaps2 {
             try {
                 br = new BufferedReader(new FileReader(JarToolUtil.getJarDir() + File.separator + "high.txt"));
                 String line;
+                StringBuilder sb = new StringBuilder();
                 while (null != (line = br.readLine())) {
-                    StringBuilder sb = new StringBuilder();
                     String[] status = line.split("\\s+");
                     if (status.length == 3) { //文件名 状态 时间
                         long last = new File(sourceFolder + File.separator + status[0]).lastModified();
                         //先匹配文件名 当状态是0 或者文件的修改时间晚于记录时间时，则处理文件
-                        if (fileNamePattern.matcher(status[0]).matches() && (status[1].equals("0") ||
-                                LocalDateTime.ofInstant(Instant.ofEpochMilli(last), ZoneId.systemDefault()).isAfter(LocalDateTime.parse(status[2], dtf)))) { //只处理状态是 0 的文件
+                        if (fileNamePattern.matcher(status[0]).matches()) { //只处理状态是 0 的文件
                             logger.info("高空开始处理，当前文件是" + status[0]);
                             List<TK> tkList = hs.getParseData(srcDir + File.separator + status[0]);
                             if (null == tkList || 0 == tkList.size()) {
