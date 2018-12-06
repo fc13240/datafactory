@@ -46,45 +46,6 @@ public class JapanTask extends BaseTask {
             // 状态文件2小时重写
             if(statusFile.exists()) {
                 statusFile.delete();
-//                String line;
-//                BufferedReader br;
-//                try {
-//                    br = new BufferedReader(new FileReader(statusFileName));
-//                    List<String> oldlist = new ArrayList<>();
-//                    //读取原状态文件内容，再把旧文件去掉
-//                    while (null != (line = br.readLine())) {
-//                        String[] status = line.split("\\s+");
-//                        if(status[1].equals("1")) {
-//                            oldlist.add(status[0]);
-//                        }
-//                    }
-//                    br.close();
-//                    String[] fileNames = srcDir.list();
-//                    fileNames = Arrays.stream(fileNames).sorted((f1,f2) -> {
-//                        if(f1.compareTo(f2) > 0) {
-//                            return -1;
-//                        } else {
-//                            return 1;
-//                        }
-//                    }).toArray(String[]::new);
-//                    ArrayList<String> newlist = new ArrayList<>(Arrays.asList(fileNames));
-//                    newlist.removeAll(oldlist);
-//                    //全部处理完或者超过1小时没更新
-//                    if((newlist.size() > 0) || LocalDateTime.ofInstant(Instant.ofEpochMilli(statusFile.lastModified()),
-//                            ZoneId.systemDefault()).isBefore(LocalDateTime.now().minusHours(1))){
-//                        //读取就旧数据，然后删除新建
-//                        boolean flag = statusFile.delete();
-//                        StringBuilder logsb = new StringBuilder();
-//                        for (String fileName : newlist) {  //文件名 状态 时间戳 初始化时间最早
-//                            logsb.append(fileName).append(" ").append("0").append(" ").append(LocalDateTime.now().minusHours(3).format(dtf)).append(c_string);
-//                        }
-//                        FileUtil.write(statusFileName, logsb.toString(), "UTF-8");
-//                    }
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e2) {
-//                    e2.printStackTrace();
-//                }
             }
             //文件不存在创建状态记录文件
             if (!statusFile.exists()) {
